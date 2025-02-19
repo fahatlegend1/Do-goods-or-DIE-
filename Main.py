@@ -3,7 +3,7 @@ import random,math
 import sys
 
 # Screen dimensions
-SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 600
+SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
 
 # Colors
 WHITE = (255, 255, 255)
@@ -12,8 +12,8 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 
-BULLET_SPEED = 5
-BULLET_COOLDOWN = 1000
+BULLET_SPEED = 4
+BULLET_COOLDOWN = 1500
 
 all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
