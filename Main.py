@@ -218,6 +218,7 @@ class Game:
         pg.display.set_caption('Do Good or DIE!')
         self.clock = pg.time.Clock()
         self.running = False
+        self.keys = pg.key.get_pressed()
 
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4)
@@ -250,10 +251,12 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = False
+            if self.keys[pg.K_b]:
+                back_to_menu()
 
     def update(self):
-        keys = pg.key.get_pressed()
-        self.player.update(keys, self.obstacles, self.enemies, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.keys = pg.key.get_pressed()
+        self.player.update(self.keys, self.obstacles, self.enemies, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.enemies.update(self.obstacles, SCREEN_WIDTH, SCREEN_HEIGHT, self.player.rect.center)
         bullets.update()
 
