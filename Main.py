@@ -66,12 +66,19 @@ class Player(BaseSprite):
         collided_enemies = pg.sprite.spritecollide(self, enemies, True)  # True means the will be removed
         if collided_enemies:
             print(f"Attacked and removed {len(collided_enemies)} enemies!")
-        
-        
+
+    def check_bullet_collision(self):
+        if pg.sprite.spritecollide(self, bullets, True):  # Remove the bullet on hit
+            print("Player got hit!")
+            if self.hp == 0:
+                self.alive = False  # Mark player as dead
+
 
     def update(self, keys, obstacles, enemies, screen_width, screen_height):
-        self.move(keys, obstacles, screen_width, screen_height)
-        self.attack(enemies)  # Check for attacks
+        if self.alive:
+            self.move(keys, obstacles, screen_width, screen_height)
+            self.attack(enemies)  # Check for attacks
+            self.check_bullet_collision()  # Check for attacks
 
 
 class Obstacle(BaseSprite):
@@ -114,7 +121,6 @@ class Bullet(BaseSprite):
                 self.kill()
                 game.player.hp -= 10
                 print(game.player.hp)
-
 
 
 class Enemy(BaseSprite):
@@ -217,4 +223,3 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
-    pg.display.flip()
