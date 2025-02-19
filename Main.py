@@ -11,7 +11,6 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 
 BULLET_SPEED = 6
@@ -42,7 +41,7 @@ class BaseSprite(pg.sprite.Sprite):
 class Player(BaseSprite):
     def __init__(self, x, y, width=40, height=40,image = Placholder_img):
         super().__init__(x, y, width, height, RED,image)
-        self.speed = 5
+        self.speed = 3
         self.hp = 100
         self.alive = True
         self.image.blit(image,(0,0))
@@ -97,7 +96,7 @@ class Player(BaseSprite):
     def c_alive(self):
         if self.hp <= 0 :
             self.alive = False
-            print('player dead')
+            print('player dead')       
 
 
     def update(self, keys, obstacles, enemies, screen_width, screen_height):
@@ -113,7 +112,7 @@ class Obstacle(BaseSprite):
         super().__init__(x, y, width, height, GREEN, image)
 
 class Bullet(BaseSprite):
-    def __init__(self, x, y, target, owner, width=10, height=10, speed=BULLET_SPEED, color=(0, 100, 255)):
+    def __init__(self, x, y, target, owner, width=15, height=15, speed=BULLET_SPEED, color=(0, 100, 255)):
         super().__init__(x, y, width, height, color)
         
         self.speed = speed
@@ -166,7 +165,7 @@ class Bullet(BaseSprite):
 
 class Enemy(BaseSprite):
     def __init__(self, x, y, width=40, height=40, speed=2,bullet_speed = 5):
-        super().__init__(x, y, width, height, BLUE)
+        super().__init__(x, y, width, height,(0,0,255))
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         self.last_shot_time = 0  # Track the last time the enemy shot a bullet
@@ -266,7 +265,12 @@ class Game:
         self.screen.blit(background,(0,0))
         self.all_sprites.draw(self.screen)
         bullets.draw(self.screen)  # <- Draw bullets
+        self.UI()
         pg.display.flip()
+    
+    def UI(self):
+        pg.draw.rect(self.screen,(255,0,0),pg.Rect(10,10,200,40))
+        pg.draw.rect(self.screen,(0,255,0),pg.Rect(10,10,self.player.hp *2,40))
 
 # Run the game
 if __name__ == "__main__":
