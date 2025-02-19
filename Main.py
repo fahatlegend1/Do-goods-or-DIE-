@@ -1,6 +1,6 @@
 import pygame as pg
 import random,math
-import sys
+import sys, subprocess
 from Load_texture import *
 
 #change directory to this project file first
@@ -268,6 +268,12 @@ class Game:
     def UI(self):
         pg.draw.rect(self.screen,(255,0,0),pg.Rect(10,10,200,40))
         pg.draw.rect(self.screen,(0,255,0),pg.Rect(10,10,self.player.hp *2,40))
+
+# To Non-san, pls make a button for this function
+def back_to_menu():
+    subprocess.Popen(['python', 'game_opening.py'])
+    pg.quit()
+    sys.exit()
 
 # Run the game
 if __name__ == "__main__":
