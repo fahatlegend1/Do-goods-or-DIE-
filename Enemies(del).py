@@ -33,3 +33,4 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, obstacles):
         self.move(obstacles)
+#kuy Nahee
