@@ -76,24 +76,34 @@ class Obstacle(BaseSprite):
         super().__init__(x, y, width, height, GREEN)
 
 class Bullet(BaseSprite):
-    def __init__(self, x, y, target, owner, width=20, height=20, speed=10, color=(0, 100, 255)):
-        # Initialize the BaseSprite part of the Bullet
+    def __init__(self, x, y, target, owner, width=10, height=10, speed=5, color=(0, 100, 255)):
         super().__init__(x, y, width, height, color)
         
-        # Additional Bullet-specific attributes
         self.speed = speed
-        self.target_x = target[0] + 20
-        self.target_y = target[1] + 20
-        self.angle = Find_angle(x, y, self.target_x, self.target_y)
-        self.x = self.rect.x
-        self.y = self.rect.y
+        self.angle = Find_angle(x, y, target[0], target[1])
+        self.x = x
+        self.y = y
         self.time = pg.time.get_ticks()
         self.dele = self.time + 4000
         self.owner = owner
 
-        # Add the bullet to the sprite groups
+        # Velocity calculations
+        self.dx = math.cos(self.angle) * self.speed
+        self.dy = math.sin(self.angle) * self.speed
+
         all_sprites.add(self)
         bullets.add(self)
+
+    def update(self):
+        # Move bullet in the calculated direction
+        self.x += self.dx
+        self.y += self.dy
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+
+        # Remove bullets after a certain time
+        if pg.time.get_ticks() > self.dele:
+            self.kill()
 
 
 
@@ -185,14 +195,17 @@ class Game:
         keys = pg.key.get_pressed()
         self.player.update(keys, self.obstacles, self.enemies, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.enemies.update(self.obstacles, SCREEN_WIDTH, SCREEN_HEIGHT, self.player.rect.center)
+        bullets.update()
 
     def draw(self):
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
+        bullets.draw(self.screen)  # <- Draw bullets
         pg.display.flip()
-
 
 # Run the game
 if __name__ == "__main__":
     game = Game()
     game.run()
+        pg.display.flip()
+
