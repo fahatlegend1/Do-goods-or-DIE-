@@ -10,4 +10,4 @@ back_ground = pg.image.load(r'Assets\Texture\1000_F_489114227_4piH63TD1SsMlOgwH8
 background = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
 back_ground = pg.image.load(r'Assets\Texture\placeholder.png').convert_alpha()
-player_img = pg.transform.scale(back_ground,(40,40))
+Placholder_img = pg.transform.scale(back_ground,(40,40))

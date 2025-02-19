@@ -31,20 +31,21 @@ def Find_angle(x,y,t_x,t_y):
 
 # Base Sprite class
 class BaseSprite(pg.sprite.Sprite):
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, width, height, color,image = Placholder_img):
         super().__init__()
         self.image = pg.Surface((width, height))
         self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
         self.last_shot_time = 0
+        self.image.blit(image,(0,0))
 
 class Player(BaseSprite):
-    def __init__(self, x, y, width=40, height=40):
-        super().__init__(x, y, width, height, RED)
+    def __init__(self, x, y, width=40, height=40,image = Placholder_img):
+        super().__init__(x, y, width, height, RED,image)
         self.speed = 5
         self.hp = 100
         self.alive = True
-        self.image.blit(player_img,(0,0))
+        self.image.blit(image,(0,0))
 
     def move(self, keys, obstacles, screen_width, screen_height):
         if self.alive:
