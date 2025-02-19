@@ -1,4 +1,5 @@
 import pygame
+#XDDD, Git and GitHub desktop are kinda good.
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, x, y, obsWidth=40, obsHeight=40):
