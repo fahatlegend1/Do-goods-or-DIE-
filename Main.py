@@ -32,7 +32,7 @@ class BaseSprite(pg.sprite.Sprite):
         self.image = pg.Surface((width, height))
         self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
-
+        self.last_shot_time = 0
 
 class Player(BaseSprite):
     def __init__(self, x, y, width=40, height=40):
@@ -70,6 +70,23 @@ class Player(BaseSprite):
         if collided_enemies:
             print(f"Attacked and removed {len(collided_enemies)} enemies!")
 
+    def shoot(self):
+        if pg.mouse.get_pressed(3)[0] == True:
+            print(1)
+            current_time = pg.time.get_ticks()
+            if current_time - self.last_shot_time > BULLET_COOLDOWN / 2:
+                # Create a bullet
+                bullet = Bullet(
+                    x=self.rect.centerx,
+                    y=self.rect.centery,
+                    target=pg.mouse.get_pos(),
+                    owner=self,
+                    speed=BULLET_SPEED,
+                    color=(255, 100, 255)  # Red bullets for enemies
+                )
+                self.last_shot_time = current_time
+
+
     def c_alive(self):
         if self.hp <= 0 :
             self.alive = False
@@ -81,6 +98,7 @@ class Player(BaseSprite):
             self.move(keys, obstacles, screen_width, screen_height)
             self.attack(enemies)  # Check for attacks
             self.c_alive()
+            self.shoot()
 
 
 class Obstacle(BaseSprite):
@@ -125,6 +143,17 @@ class Bullet(BaseSprite):
                 self.kill()
                 bullets.remove(self)
                 game.player.hp -= 10
+        if pg.sprite.spritecollide(self,game.enemies,False):
+            if self.owner == game.player:
+                a =pg.sprite.spritecollideany(self,game.enemies)
+                a.kill()
+                game.enemies.remove(a)
+                self.kill()
+                bullets.remove(self)
+
+           
+          
+
                 
 
 
@@ -212,6 +241,7 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = False
+        
 
     def update(self):
         keys = pg.key.get_pressed()
