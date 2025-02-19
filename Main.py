@@ -14,7 +14,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 
-BULLET_SPEED = 4
+BULLET_SPEED = 6
 BULLET_COOLDOWN = 1500
 
 all_sprites = pg.sprite.Group()
@@ -109,8 +109,8 @@ class Player(BaseSprite):
 
 
 class Obstacle(BaseSprite):
-    def __init__(self, x, y, width=40, height=40):
-        super().__init__(x, y, width, height, GREEN)
+    def __init__(self, x, y, width=40, height=40,image= Placholder_img):
+        super().__init__(x, y, width, height, GREEN, image)
 
 class Bullet(BaseSprite):
     def __init__(self, x, y, target, owner, width=10, height=10, speed=BULLET_SPEED, color=(0, 100, 255)):
@@ -225,8 +225,8 @@ class Game:
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4)
         self.obstacles = pg.sprite.Group(
-            Obstacle(600, 375),
-            Obstacle(400, 200)
+            Obstacle(600, 375,image = Barrel_img),
+            Obstacle(400, 200,image = Barrel_img)
         )
         self.enemies = pg.sprite.Group(
             Enemy(800, 500),
@@ -237,11 +237,13 @@ class Game:
 
     def run(self):
         self.running = True
+        aaa = 0
         while self.running:
             self.clock.tick(60)  # Cap at 60 FPS
             self.handle_events()
-            self.update()
-            self.draw()
+            if aaa == 0 :
+                self.update()
+                self.draw()
             
 
         pg.quit()
