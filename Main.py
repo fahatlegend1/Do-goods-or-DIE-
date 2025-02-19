@@ -1,7 +1,9 @@
 import pygame as pg
 import random,math
 import sys
+from Load_texture import *
 
+#change directory to this project file first
 # Screen dimensions
 SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
 
@@ -17,6 +19,8 @@ BULLET_COOLDOWN = 1500
 
 all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
+
+
 
 def Find_angle(x,y,t_x,t_y):
     angle = math.atan2(t_y-y, t_x-x) #get angle to target in radians
@@ -251,6 +255,7 @@ class Game:
 
     def draw(self):
         self.screen.fill(BLACK)
+        self.screen.blit(background,(0,0))
         self.all_sprites.draw(self.screen)
         bullets.draw(self.screen)  # <- Draw bullets
         pg.display.flip()
