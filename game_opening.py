@@ -1,5 +1,6 @@
 import pygame
 import sys
+import subprocess
 
 # Initialize Pygame
 pygame.init()
@@ -112,6 +113,9 @@ def set_music_volume(value):
 # Button actions
 def start_game():
     print("Game Started!")  # Replace with actual game logic
+    subprocess.Popen(["python", "Main.py"]) # Run the main game script
+    pygame.quit()
+    sys.exit()
 
 def quit_game():
     pygame.quit()
