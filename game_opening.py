@@ -10,11 +10,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Do Good or DIE!")
 
 # Load sounds
-pygame.mixer.music.load("menu_music.mp3")  # Background music
+pygame.mixer.music.load(r"Assets\Audio\menu_music.mp3")  # Background music
 pygame.mixer.music.set_volume(0.5)  # Default music volume
 pygame.mixer.music.play(-1)  # Loop music indefinitely
 
-click_sound = pygame.mixer.Sound("click.wav")  # Button click sound
+click_sound = pygame.mixer.Sound(r"Assets\Audio\click.wav")  # Button click sound
 click_sound.set_volume(0.7)  # Default click sound volume
 
 # Colors
@@ -168,7 +168,7 @@ while running:
 
     elif current_screen == EDITOR_SCREEN:
         # Show editor info
-        editor_text = small_font.render("Game Editor: Kaan,Non,Tonnam,Fahad,Neo,Japan ", True, WHITE)
+        editor_text = small_font.render("Game Editor: Kaan,Non,Tonnam,Fahat,Neo,Japan ", True, WHITE)
         text_rect = editor_text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
         screen.blit(editor_text, text_rect)
 

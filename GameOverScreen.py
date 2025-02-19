@@ -22,7 +22,7 @@ font = pygame.font.SysFont("Arial", 64)
 button_font = pygame.font.SysFont("Arial", 32)
 
 # Load sound effect
-game_over_sound = pygame.mixer.Sound("game_over_sound.wav")
+game_over_sound = pygame.mixer.Sound(r"Assets\Audio\game_over_sound.wav")
 
 # Particle class for confetti effect
 class Particle:
