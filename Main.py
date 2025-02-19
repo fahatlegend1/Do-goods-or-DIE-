@@ -27,17 +27,77 @@ def Find_angle(x,y,t_x,t_y):
 
 # Base Sprite class
 class BaseSprite(pg.sprite.Sprite):
+<<<<<<< Updated upstream
     def __init__(self, x, y, width, height, color):
+=======
+    def __init__(self, x, y, color, width=40, height=40, image = Placholder_img):
+>>>>>>> Stashed changes
         super().__init__()
         self.image = pg.Surface((width, height))
         self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
 
 
+class Bullet(BaseSprite):
+    def __init__(self, x, y, target, owner, width=15, height=15, speed=BULLET_SPEED, color=(0, 100, 255)):
+        super().__init__(x, y, color)
+        
+        self.speed = speed
+        self.angle = Find_angle(x, y, target[0], target[1])
+        self.x = x
+        self.y = y
+        self.time = pg.time.get_ticks()
+        self.dele = self.time + 4000
+        self.owner = owner
+
+        # Velocity calculations
+        self.dx = math.cos(self.angle) * self.speed
+        self.dy = math.sin(self.angle) * self.speed
+
+        all_sprites.add(self)
+        bullets.add(self)
+
+    def update(self):
+        # Move bullet in the calculated direction
+        self.x += self.dx
+        self.y += self.dy
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+
+        # Remove bullets after a certain time
+        if pg.time.get_ticks() > self.dele:
+            self.kill()
+            bullets.remove(self)
+        if pg.sprite.spritecollide(self,game.obstacles,True):
+            self.kill()
+            bullets.remove(self)
+        if pg.sprite.spritecollide(self,[game.player],False):
+            if self.owner != game.player:
+                self.kill()
+                bullets.remove(self)
+                game.player.hp -= 10
+        if pg.sprite.spritecollide(self,game.enemies,False):
+            if self.owner == game.player:
+                a =pg.sprite.spritecollideany(self,game.enemies)
+                a.kill()
+                game.enemies.remove(a)
+                self.kill()
+                bullets.remove(self)
+
 class Player(BaseSprite):
+<<<<<<< Updated upstream
     def __init__(self, x, y, width=40, height=40):
         super().__init__(x, y, width, height, RED)
         self.speed = 5
+=======
+    def __init__(self, x, y, width, height,image):
+        super().__init__(x, y, RED, width, height,image)
+        self.speed = 3
+        self.hp = 100
+        self.alive = True
+        self.image.blit(image,(0,0))
+        
+>>>>>>> Stashed changes
 
     def move(self, keys, obstacles, screen_width, screen_height):
         original_x, original_y = self.rect.x, self.rect.y
@@ -72,6 +132,7 @@ class Player(BaseSprite):
 
 
 class Obstacle(BaseSprite):
+<<<<<<< Updated upstream
     def __init__(self, x, y, width=40, height=40):
         super().__init__(x, y, width, height, GREEN)
 
@@ -106,12 +167,23 @@ class Bullet(BaseSprite):
             self.kill()
         if pg.sprite.spritecollide(self,game.obstacles,True):
             self.kill()
+=======
+    def __init__(self, x, y, width, height,image):
+        super().__init__(x, y, width, height, GREEN, image)
+
+
+>>>>>>> Stashed changes
 
 
 
 class Enemy(BaseSprite):
+<<<<<<< Updated upstream
     def __init__(self, x, y, width=40, height=40, speed=2):
         super().__init__(x, y, width, height, BLUE)
+=======
+    def __init__(self, x, y, width, height, speed=2, bullet_speed = 5):
+        super().__init__(x, y, width, height,(0,0,255))
+>>>>>>> Stashed changes
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         self.last_shot_time = 0  # Track the last time the enemy shot a bullet
