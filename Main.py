@@ -38,6 +38,7 @@ class Player(BaseSprite):
     def __init__(self, x, y, width=40, height=40):
         super().__init__(x, y, width, height, RED)
         self.speed = 5
+        self.hp = 100
 
     def move(self, keys, obstacles, screen_width, screen_height):
         original_x, original_y = self.rect.x, self.rect.y
@@ -65,6 +66,8 @@ class Player(BaseSprite):
         collided_enemies = pg.sprite.spritecollide(self, enemies, True)  # True means the will be removed
         if collided_enemies:
             print(f"Attacked and removed {len(collided_enemies)} enemies!")
+        
+        
 
     def update(self, keys, obstacles, enemies, screen_width, screen_height):
         self.move(keys, obstacles, screen_width, screen_height)
@@ -106,6 +109,11 @@ class Bullet(BaseSprite):
             self.kill()
         if pg.sprite.spritecollide(self,game.obstacles,True):
             self.kill()
+        if pg.sprite.spritecollide(self,[game.player],False):
+            if self.owner != game.player:
+                self.kill()
+                game.player.hp -= 10
+                print(game.player.hp)
 
 
 
