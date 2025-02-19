@@ -44,6 +44,7 @@ class Player(BaseSprite):
         self.speed = 5
         self.hp = 100
         self.alive = True
+        self.image.blit(player_img,(0,0))
 
     def move(self, keys, obstacles, screen_width, screen_height):
         if self.alive:
