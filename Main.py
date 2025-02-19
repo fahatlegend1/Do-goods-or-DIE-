@@ -104,6 +104,8 @@ class Bullet(BaseSprite):
         # Remove bullets after a certain time
         if pg.time.get_ticks() > self.dele:
             self.kill()
+        if pg.sprite.spritecollide(self,game.obstacles,True):
+            self.kill()
 
 
 
@@ -207,5 +209,4 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
-        pg.display.flip()
-
+    pg.display.flip()
