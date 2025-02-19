@@ -39,27 +39,30 @@ class Player(BaseSprite):
         super().__init__(x, y, width, height, RED)
         self.speed = 5
         self.hp = 100
+        self.alive = True
 
     def move(self, keys, obstacles, screen_width, screen_height):
-        original_x, original_y = self.rect.x, self.rect.y
+        if self.alive:
+        
+            original_x, original_y = self.rect.x, self.rect.y
 
-        # X Direction
-        if keys[pg.K_a]:
-            self.rect.x -= self.speed
-        if keys[pg.K_d]:
-            self.rect.x += self.speed
+            # X Direction
+            if keys[pg.K_a]:
+                self.rect.x -= self.speed
+            if keys[pg.K_d]:
+                self.rect.x += self.speed
 
-        # Y Direction
-        if keys[pg.K_w]:
-            self.rect.y -= self.speed
-        if keys[pg.K_s]:
-            self.rect.y += self.speed
+            # Y Direction
+            if keys[pg.K_w]:
+                self.rect.y -= self.speed
+            if keys[pg.K_s]:
+                self.rect.y += self.speed
 
-        # Prevent moving outside boundaries or colliding with obstacles
-        if (self.rect.left < 0 or self.rect.right > screen_width or
-                self.rect.top < 0 or self.rect.bottom > screen_height or
-                pg.sprite.spritecollide(self, obstacles, False)):
-            self.rect.x, self.rect.y = original_x, original_y  # Undo movement
+            # Prevent moving outside boundaries or colliding with obstacles
+            if (self.rect.left < 0 or self.rect.right > screen_width or
+                    self.rect.top < 0 or self.rect.bottom > screen_height or
+                    pg.sprite.spritecollide(self, obstacles, False)):
+                self.rect.x, self.rect.y = original_x, original_y  # Undo movement
 
     def attack(self, enemies):
         # Check for collisions with enemies
@@ -67,18 +70,17 @@ class Player(BaseSprite):
         if collided_enemies:
             print(f"Attacked and removed {len(collided_enemies)} enemies!")
 
-    def check_bullet_collision(self):
-        if pg.sprite.spritecollide(self, bullets, True):  # Remove the bullet on hit
-            print("Player got hit!")
-            if self.hp == 0:
-                self.alive = False  # Mark player as dead
+    def c_alive(self):
+        if self.hp <= 0 :
+            self.alive = False
+            print('player dead')
 
 
     def update(self, keys, obstacles, enemies, screen_width, screen_height):
         if self.alive:
             self.move(keys, obstacles, screen_width, screen_height)
             self.attack(enemies)  # Check for attacks
-            self.check_bullet_collision()  # Check for attacks
+            self.c_alive()
 
 
 class Obstacle(BaseSprite):
@@ -86,7 +88,7 @@ class Obstacle(BaseSprite):
         super().__init__(x, y, width, height, GREEN)
 
 class Bullet(BaseSprite):
-    def __init__(self, x, y, target, owner, width=10, height=10, speed=5, color=(0, 100, 255)):
+    def __init__(self, x, y, target, owner, width=10, height=10, speed=BULLET_SPEED, color=(0, 100, 255)):
         super().__init__(x, y, width, height, color)
         
         self.speed = speed
@@ -114,21 +116,25 @@ class Bullet(BaseSprite):
         # Remove bullets after a certain time
         if pg.time.get_ticks() > self.dele:
             self.kill()
+            bullets.remove(self)
         if pg.sprite.spritecollide(self,game.obstacles,True):
             self.kill()
+            bullets.remove(self)
         if pg.sprite.spritecollide(self,[game.player],False):
             if self.owner != game.player:
                 self.kill()
+                bullets.remove(self)
                 game.player.hp -= 10
-                print(game.player.hp)
+                
 
 
 class Enemy(BaseSprite):
-    def __init__(self, x, y, width=40, height=40, speed=2):
+    def __init__(self, x, y, width=40, height=40, speed=2,bullet_speed = 5):
         super().__init__(x, y, width, height, BLUE)
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         self.last_shot_time = 0  # Track the last time the enemy shot a bullet
+        self.bullet_speed = bullet_speed
 
     def move(self, obstacles, screen_width, screen_height):
         original_x, original_y = self.rect.x, self.rect.y
@@ -158,7 +164,7 @@ class Enemy(BaseSprite):
                 y=self.rect.centery,
                 target=target,
                 owner=self,
-                speed=BULLET_SPEED,
+                speed=self.bullet_speed,
                 color=(255, 0, 0)  # Red bullets for enemies
             )
             self.last_shot_time = current_time
