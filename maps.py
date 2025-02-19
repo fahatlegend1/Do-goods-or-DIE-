@@ -24,7 +24,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("SoulKnight-Style Map Generator with Obstacles")
 
 # Load floor texture
-floor_texture = pygame.image.load("1000_F_489114227_4piH63TD1SsMlOgwH8kr88LirtrueZsc.jpg")
+floor_texture = pygame.image.load(r"Assets\Texture\background1.jpg")
 floor_texture = pygame.transform.scale(floor_texture, (TILE_SIZE, TILE_SIZE))
 
 # Grid
