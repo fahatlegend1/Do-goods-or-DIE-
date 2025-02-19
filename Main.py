@@ -20,13 +20,13 @@ all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
 
 
-
 def Find_angle(x,y,t_x,t_y):
     angle = math.atan2(t_y-y, t_x-x) #get angle to target in radians
     #print(angle)
     #print('Angle in degrees:', int(angle*180/math.pi))
     #angle_degrees = math.degrees(angle)
     return angle
+
 
 # Base Sprite class
 class BaseSprite(pg.sprite.Sprite):
@@ -37,6 +37,56 @@ class BaseSprite(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(x, y))
         self.last_shot_time = 0
         self.image.blit(image,(0,0))
+
+
+
+class Bullet(BaseSprite):
+    def __init__(self, x, y, target, owner, width=15, height=15, speed=BULLET_SPEED, color=(0, 100, 255)):
+        super().__init__(x, y, width, height, color)
+        
+        self.speed = speed
+        self.angle = Find_angle(x, y, target[0], target[1])
+        self.x = x
+        self.y = y
+        self.time = pg.time.get_ticks()
+        self.dele = self.time + 4000
+        self.owner = owner
+
+        # Velocity calculations
+        self.dx = math.cos(self.angle) * self.speed
+        self.dy = math.sin(self.angle) * self.speed
+
+        all_sprites.add(self)
+        bullets.add(self)
+
+    def update(self):
+        # Move bullet in the calculated direction
+        self.x += self.dx
+        self.y += self.dy
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+
+        # Remove bullets after a certain time
+        if pg.time.get_ticks() > self.dele:
+            self.kill()
+            bullets.remove(self)
+        if pg.sprite.spritecollide(self,game.obstacles,True):
+            self.kill()
+            bullets.remove(self)
+        if pg.sprite.spritecollide(self,[game.player],False):
+            if self.owner != game.player:
+                self.kill()
+                bullets.remove(self)
+                game.player.hp -= 10
+        if pg.sprite.spritecollide(self,game.enemies,False):
+            if self.owner == game.player:
+                a =pg.sprite.spritecollideany(self,game.enemies)
+                a.kill()
+                game.enemies.remove(a)
+                self.kill()
+                bullets.remove(self)
+
+
 
 class Player(BaseSprite):
     def __init__(self, x, y, width=40, height=40,image = Placholder_img):
@@ -92,12 +142,10 @@ class Player(BaseSprite):
                 )
                 self.last_shot_time = current_time
 
-
     def c_alive(self):
         if self.hp <= 0 :
             self.alive = False
             print('player dead')       
-
 
     def update(self, keys, obstacles, enemies, screen_width, screen_height):
         if self.alive:
@@ -111,56 +159,6 @@ class Obstacle(BaseSprite):
     def __init__(self, x, y, width=40, height=40,image= Placholder_img):
         super().__init__(x, y, width, height, GREEN, image)
 
-class Bullet(BaseSprite):
-    def __init__(self, x, y, target, owner, width=15, height=15, speed=BULLET_SPEED, color=(0, 100, 255)):
-        super().__init__(x, y, width, height, color)
-        
-        self.speed = speed
-        self.angle = Find_angle(x, y, target[0], target[1])
-        self.x = x
-        self.y = y
-        self.time = pg.time.get_ticks()
-        self.dele = self.time + 4000
-        self.owner = owner
-
-        # Velocity calculations
-        self.dx = math.cos(self.angle) * self.speed
-        self.dy = math.sin(self.angle) * self.speed
-
-        all_sprites.add(self)
-        bullets.add(self)
-
-    def update(self):
-        # Move bullet in the calculated direction
-        self.x += self.dx
-        self.y += self.dy
-        self.rect.x = int(self.x)
-        self.rect.y = int(self.y)
-
-        # Remove bullets after a certain time
-        if pg.time.get_ticks() > self.dele:
-            self.kill()
-            bullets.remove(self)
-        if pg.sprite.spritecollide(self,game.obstacles,True):
-            self.kill()
-            bullets.remove(self)
-        if pg.sprite.spritecollide(self,[game.player],False):
-            if self.owner != game.player:
-                self.kill()
-                bullets.remove(self)
-                game.player.hp -= 10
-        if pg.sprite.spritecollide(self,game.enemies,False):
-            if self.owner == game.player:
-                a =pg.sprite.spritecollideany(self,game.enemies)
-                a.kill()
-                game.enemies.remove(a)
-                self.kill()
-                bullets.remove(self)
-
-           
-          
-
-                
 
 
 class Enemy(BaseSprite):
@@ -252,7 +250,6 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = False
-        
 
     def update(self):
         keys = pg.key.get_pressed()
