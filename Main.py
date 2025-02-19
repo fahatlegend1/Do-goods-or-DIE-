@@ -46,6 +46,7 @@ class Player(BaseSprite):
         self.hp = 100
         self.alive = True
         self.image.blit(image,(0,0))
+        
 
     def move(self, keys, obstacles, screen_width, screen_height):
         if self.alive:
@@ -210,6 +211,8 @@ class Enemy(BaseSprite):
         self.shoot(target)
 
 
+num_scene = 0
+
 # Main Game class
 class Game:
     def __init__(self):
@@ -239,6 +242,7 @@ class Game:
             self.handle_events()
             self.update()
             self.draw()
+            
 
         pg.quit()
         sys.exit()
