@@ -86,15 +86,17 @@ for _ in range(NUM_WALLS):
 
 map_grid = grid
 
-def draw_grid(screen,Obstacle,ob_group):
+def draw_grid(screen,Obstacle,ob_group,BaseSprite,base_group):
     for x in range(GRID_WIDTH):
         for y in range(GRID_HEIGHT):
             if grid[x][y] == 0:
-                screen.blit(floor_texture, (x * TILE_SIZE, y * TILE_SIZE))
+                c = BaseSprite(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,color = (255,0,0),image = floor_texture)
+                base_group.add(c)
             elif grid[x][y] == 2:
                 pygame.draw.rect(screen, DARK_GRAY, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
             else:
-                pygame.draw.rect(screen, GRAY, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+                a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,indestructible = True)
+                ob_group.add(a)
     for (x, y) in obstacles:
         a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,image =Barrel_img)
         ob_group.add(a)

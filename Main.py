@@ -71,7 +71,13 @@ class Bullet(BaseSprite):
         if pg.time.get_ticks() > self.dele:
             self.kill()
             bullets.remove(self)
-        if pg.sprite.spritecollide(self,game.obstacles,True):
+        #if (pg.sprite.spritecollideany(self,game.obstacles)) == False:
+        if pg.sprite.spritecollide(self,game.obstacles,False):
+            t =(pg.sprite.spritecollideany(self,game.obstacles))
+            if t.indestructible == True:
+                pass
+            else:
+                pg.sprite.spritecollide(self,game.obstacles,True)
             self.kill()
             bullets.remove(self)
         if pg.sprite.spritecollide(self,[game.player],False): # all player take damage
@@ -156,9 +162,10 @@ class Player(BaseSprite):
 
 
 class Obstacle(BaseSprite):
-    def __init__(self, x, y, width=40, height=40,image= Placholder_img):
+    def __init__(self, x, y, width=40, height=40,image= Placholder_img,indestructible = False):
         super().__init__(x, y, width, height, GREEN, image)
         self.pos = (x,y)
+        self.indestructible = indestructible
 
 
 
@@ -224,12 +231,15 @@ class Game:
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4)
         self.obstacles = pg.sprite.Group()
+        self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group(
             Enemy(800, 500),
             Enemy(200, 300),
             Enemy(200, 400)
         )
-        draw_grid(self.screen,Obstacle,self.obstacles)
+
+        draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
+
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
 
     def run(self):
@@ -262,9 +272,7 @@ class Game:
     def draw(self):
         self.screen.fill(BLACK)
         self.screen.blit(background,(0,0))
-        #test
-        
-        #
+        self.background.draw(self.screen)
         self.all_sprites.draw(self.screen)
         bullets.draw(self.screen)  # <- Draw bullets
         self.UI()
