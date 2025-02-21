@@ -138,11 +138,11 @@ start_button = Button("Start", WIDTH /2 -100, HEIGHT/2, 200, 60, RED, DARK_RED, 
 quit_button = Button("Quit", WIDTH /2-100, HEIGHT/2+80, 200, 60, RED, DARK_RED, quit_game)
 question_button = Button("?", 20, HEIGHT - 60, 50, 50, GRAY, WHITE, go_to_editor)
 settings_button = Button("⚙", WIDTH - 70, HEIGHT - 60, 50, 50, GRAY, WHITE, go_to_settings)
-back_button = Button("Back", 300, 500, 200, 60, RED, DARK_RED, go_to_menu)
+back_button = Button("Back", WIDTH /2 -100, 500, 200, 60, RED, DARK_RED, go_to_menu)
 
 # Create sliders
-master_volume_slider = Slider(300, 250, 200, master_volume, 0.0, 1.0, set_master_volume)
-music_volume_slider = Slider(300, 350, 200, music_volume, 0.0, 1.0, set_music_volume)
+master_volume_slider = Slider(WIDTH /2 -100, 250, 200, master_volume, 0.0, 1.0, set_master_volume)
+music_volume_slider = Slider(WIDTH /2 -100, 350, 200, music_volume, 0.0, 1.0, set_music_volume)
 
 # Title animation variables
 title_y = 120
@@ -182,7 +182,7 @@ while running:
     elif current_screen == SETTINGS_SCREEN:
         # Show settings title
         settings_text = small_font.render("Settings", True, WHITE)
-        screen.blit(settings_text, (350, 150))
+        screen.blit(settings_text, (WIDTH /2 -50, 150))
 
         # Draw sliders
         master_volume_slider.draw(screen)
