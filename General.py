@@ -1,5 +1,5 @@
 import random,pygame
-from Load_texture import background,Barrel_img
+from Load_texture import background,Barrel_img,bedrock_img,stonebrick_img
 
 WIDTH, HEIGHT = 1200, 720
 TILE_SIZE = 40
@@ -19,6 +19,8 @@ DARK_GRAY = (50, 50, 50)
 floor_texture = background
 floor_texture = pygame.transform.scale(floor_texture, (TILE_SIZE, TILE_SIZE))
 Barrel_texture = pygame.transform.scale(Barrel_img, (TILE_SIZE, TILE_SIZE))
+bedrock_texture = pygame.transform.scale(bedrock_img, (TILE_SIZE, TILE_SIZE))
+stonebrick_texture = pygame.transform.scale(stonebrick_img, (TILE_SIZE, TILE_SIZE))
 
 grid = [[1 for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
 rooms = []
@@ -93,12 +95,14 @@ def draw_grid(screen,Obstacle,ob_group,BaseSprite,base_group):
                 c = BaseSprite(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,color = (255,0,0),image = floor_texture)
                 base_group.add(c)
             elif grid[x][y] == 2:
-                pygame.draw.rect(screen, DARK_GRAY, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+                a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,indestructible = True,image = bedrock_texture)
+                ob_group.add(a)
             else:
-                a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,indestructible = True)
+                a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,image = stonebrick_texture,indestructible = True)
                 ob_group.add(a)
     for (x, y) in obstacles:
         a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,image =Barrel_img)
         ob_group.add(a)
     for (x, y) in walls:
-        pygame.draw.rect(screen, DARK_GRAY, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))  # Dark gray for walls
+            a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,indestructible = True,image = bedrock_texture)
+            ob_group.add(a)  # Dark gray for walls

@@ -12,3 +12,15 @@ Placholder_img = pg.transform.scale(back_ground,(40,40))
 
 back_ground = pg.image.load(r'Assets\Texture\barrel.jpg').convert_alpha()
 Barrel_img = pg.transform.scale(back_ground,(40,40))
+
+back_ground = pg.image.load(r'Assets\Texture\bedrock.png').convert_alpha()
+bedrock_img = pg.transform.scale(back_ground,(40,40))
+
+back_ground = pg.image.load(r'Assets\Texture\stonebrick.png').convert_alpha()
+stonebrick_img = pg.transform.scale(back_ground,(40,40))
+
+back_ground = pg.image.load(r'Assets\Texture\skeleton.jpg').convert_alpha()
+skeleton_img = pg.transform.scale(back_ground,(40,40))
+
+back_ground = pg.image.load(r'Assets\Texture\steve.jpg').convert_alpha()
+steve_img = pg.transform.scale(back_ground,(40,40))

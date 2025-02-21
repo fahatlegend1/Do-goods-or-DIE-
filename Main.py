@@ -170,12 +170,14 @@ class Obstacle(BaseSprite):
 
 
 class Enemy(BaseSprite):
-    def __init__(self, x, y, width=40, height=40, speed=2,bullet_speed = 5):
-        super().__init__(x, y, width, height,(0,0,255))
+    def __init__(self, x, y, width=40, height=40, speed=2,bullet_speed = 5,image = Placholder_img):
+        super().__init__(x, y, width, height,(0,0,255),image )
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         self.last_shot_time = 0  # Track the last time the enemy shot a bullet
         self.bullet_speed = bullet_speed
+        self.image.blit(image,(0,0))
+
 
     def move(self, obstacles, screen_width, screen_height):
         original_x, original_y = self.rect.x, self.rect.y
@@ -229,13 +231,13 @@ class Game:
         self.keys = pg.key.get_pressed()
 
         # Initialize sprites
-        self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4)
+        self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
         self.obstacles = pg.sprite.Group()
         self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group(
-            Enemy(800, 500),
-            Enemy(200, 300),
-            Enemy(200, 400)
+            Enemy(800, 500,image= skeleton_img),
+            Enemy(200, 300,image= skeleton_img),
+            Enemy(200, 400,image= skeleton_img)
         )
 
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
@@ -268,6 +270,9 @@ class Game:
         self.player.update(self.keys, self.obstacles, self.enemies, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.enemies.update(self.obstacles, SCREEN_WIDTH, SCREEN_HEIGHT, self.player.rect.center)
         bullets.update()
+        if len(self.enemies) == 0:
+            back_to_menu()
+        
 
     def draw(self):
         self.screen.fill(BLACK)
