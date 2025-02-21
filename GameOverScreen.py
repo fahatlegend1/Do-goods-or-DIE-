@@ -1,7 +1,6 @@
 import pygame
-import sys
-import random
-import math
+import sys, subprocess
+import random, math
 
 # Initialize Pygame
 pygame.init()
@@ -116,6 +115,9 @@ def main():
                 elif event.key == pygame.K_r:  # Press R to restart
                     score = random.randint(0, 100)  # Reset score or handle restart logic
                     print("Game restarted!")  # Placeholder
+                    subprocess.Popen(["python", "Main.py"]) # Run the main game script
+                    pygame.quit()
+                    sys.exit()
 
         pygame.display.update()
         offset += 0.05  # Increment to animate the background and text
