@@ -6,7 +6,7 @@ import subprocess
 pygame.init()
 
 # Screen settings
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1200,720
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Do Good or DIE!")
 
@@ -134,8 +134,8 @@ def go_to_menu():
     current_screen = MENU
 
 # Create buttons
-start_button = Button("Start", 300, 280, 200, 60, RED, DARK_RED, start_game)
-quit_button = Button("Quit", 300, 380, 200, 60, RED, DARK_RED, quit_game)
+start_button = Button("Start", WIDTH /2 -100, HEIGHT/2, 200, 60, RED, DARK_RED, start_game)
+quit_button = Button("Quit", WIDTH /2-100, HEIGHT/2+80, 200, 60, RED, DARK_RED, quit_game)
 question_button = Button("?", 20, HEIGHT - 60, 50, 50, GRAY, WHITE, go_to_editor)
 settings_button = Button("⚙", WIDTH - 70, HEIGHT - 60, 50, 50, GRAY, WHITE, go_to_settings)
 back_button = Button("Back", 300, 500, 200, 60, RED, DARK_RED, go_to_menu)

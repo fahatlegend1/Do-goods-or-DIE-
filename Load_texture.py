@@ -23,4 +23,4 @@ back_ground = pg.image.load(r'Assets\Texture\skeleton.jpg').convert_alpha()
 skeleton_img = pg.transform.scale(back_ground,(40,40))
 
 back_ground = pg.image.load(r'Assets\Texture\steve.jpg').convert_alpha()
-steve_img = pg.transform.scale(back_ground,(40,40))
+steve_img = pg.transform.scale(back_ground,(35,35))

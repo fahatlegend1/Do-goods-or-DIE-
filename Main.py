@@ -96,7 +96,7 @@ class Bullet(BaseSprite):
 
 
 class Player(BaseSprite):
-    def __init__(self, x, y, width=38, height=38,image = Placholder_img):
+    def __init__(self, x, y, width=35, height=35,image = Placholder_img):
         super().__init__(x, y, width, height, RED,image)
         self.speed = 3
         self.hp = 100
@@ -270,9 +270,7 @@ class Game:
         self.player.update(self.keys, self.obstacles, self.enemies, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.enemies.update(self.obstacles, SCREEN_WIDTH, SCREEN_HEIGHT, self.player.rect.center)
         bullets.update()
-        if len(self.enemies) == 0:
-            back_to_menu()
-        
+
 
     def draw(self):
         self.screen.fill(BLACK)
