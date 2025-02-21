@@ -8,6 +8,7 @@ ROOM_MAX_SIZE, ROOM_MIN_SIZE = 8, 6
 NUM_ROOMS = 8
 NUM_OBSTACLES = 20
 NUM_WALLS = 10
+NUM_ENTITY = 4
 
 # Colors
 BLACK = (0, 0, 0)
@@ -22,10 +23,12 @@ Barrel_texture = pygame.transform.scale(Barrel_img, (TILE_SIZE, TILE_SIZE))
 bedrock_texture = pygame.transform.scale(bedrock_img, (TILE_SIZE, TILE_SIZE))
 stonebrick_texture = pygame.transform.scale(stonebrick_img, (TILE_SIZE, TILE_SIZE))
 
+
 grid = [[1 for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
 rooms = []
 obstacles = []
 walls = []
+entity = []
 
 # Create map boundaries
 for x in range(GRID_WIDTH):
@@ -82,6 +85,12 @@ for _ in range(NUM_WALLS):
         walls.append((x, y))
         grid[x][y] = 2  # Mark as wall
 
+for _ in range(NUM_ENTITY):
+    x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
+    if grid[x][y] == 0:  # Place walls in open spaces
+        entity.append((x, y))
+        grid[x][y] = 3  # Mark as wall
+
 
 
 
@@ -106,3 +115,6 @@ def draw_grid(screen,Obstacle,ob_group,BaseSprite,base_group):
     for (x, y) in walls:
             a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,indestructible = True,image = bedrock_texture)
             ob_group.add(a)  # Dark gray for walls
+
+    
+print(grid)
