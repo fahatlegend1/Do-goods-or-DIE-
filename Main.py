@@ -2,6 +2,7 @@ import pygame as pg
 import random,math
 import sys, subprocess
 from Load_texture import *
+from General import map_grid,draw_grid
 
 #change directory to this project file first
 # Screen dimensions
@@ -73,7 +74,7 @@ class Bullet(BaseSprite):
         if pg.sprite.spritecollide(self,game.obstacles,True):
             self.kill()
             bullets.remove(self)
-        if pg.sprite.spritecollide(self,[game.player],False):
+        if pg.sprite.spritecollide(self,[game.player],False): # all player take damage
             if self.owner != game.player:
                 self.kill()
                 bullets.remove(self)
@@ -128,7 +129,6 @@ class Player(BaseSprite):
 
     def shoot(self):
         if pg.mouse.get_pressed(3)[0] == True:
-            print(1)
             current_time = pg.time.get_ticks()
             if current_time - self.last_shot_time > BULLET_COOLDOWN / 2:
                 # Create a bullet
@@ -263,6 +263,9 @@ class Game:
     def draw(self):
         self.screen.fill(BLACK)
         self.screen.blit(background,(0,0))
+        #test
+        draw_grid(self.screen)
+        #
         self.all_sprites.draw(self.screen)
         bullets.draw(self.screen)  # <- Draw bullets
         self.UI()
