@@ -90,7 +90,7 @@ class Bullet(BaseSprite):
 
 
 class Player(BaseSprite):
-    def __init__(self, x, y, width=40, height=40,image = Placholder_img):
+    def __init__(self, x, y, width=38, height=38,image = Placholder_img):
         super().__init__(x, y, width, height, RED,image)
         self.speed = 3
         self.hp = 100
@@ -158,6 +158,7 @@ class Player(BaseSprite):
 class Obstacle(BaseSprite):
     def __init__(self, x, y, width=40, height=40,image= Placholder_img):
         super().__init__(x, y, width, height, GREEN, image)
+        self.pos = (x,y)
 
 
 
@@ -222,15 +223,13 @@ class Game:
 
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4)
-        self.obstacles = pg.sprite.Group(
-            Obstacle(600, 375,image = Barrel_img),
-            Obstacle(400, 200,image = Barrel_img)
-        )
+        self.obstacles = pg.sprite.Group()
         self.enemies = pg.sprite.Group(
             Enemy(800, 500),
             Enemy(200, 300),
             Enemy(200, 400)
         )
+        draw_grid(self.screen,Obstacle,self.obstacles)
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
 
     def run(self):
@@ -264,7 +263,7 @@ class Game:
         self.screen.fill(BLACK)
         self.screen.blit(background,(0,0))
         #test
-        draw_grid(self.screen)
+        
         #
         self.all_sprites.draw(self.screen)
         bullets.draw(self.screen)  # <- Draw bullets

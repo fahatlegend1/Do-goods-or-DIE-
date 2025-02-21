@@ -106,11 +106,6 @@ def draw_grid():
         pygame.draw.rect(screen, DARK_GRAY, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))  # Dark gray for walls
 
 
-
-print(grid)
-
-
-
 def main():
     running = True
     while running:

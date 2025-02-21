@@ -1,5 +1,5 @@
 import random,pygame
-from Load_texture import background
+from Load_texture import background,Barrel_img
 
 WIDTH, HEIGHT = 1200, 720
 TILE_SIZE = 40
@@ -18,6 +18,7 @@ GREEN = (34, 139, 34)
 DARK_GRAY = (50, 50, 50)
 floor_texture = background
 floor_texture = pygame.transform.scale(floor_texture, (TILE_SIZE, TILE_SIZE))
+Barrel_texture = pygame.transform.scale(Barrel_img, (TILE_SIZE, TILE_SIZE))
 
 grid = [[1 for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
 rooms = []
@@ -85,7 +86,7 @@ for _ in range(NUM_WALLS):
 
 map_grid = grid
 
-def draw_grid(screen):
+def draw_grid(screen,Obstacle,ob_group):
     for x in range(GRID_WIDTH):
         for y in range(GRID_HEIGHT):
             if grid[x][y] == 0:
@@ -95,7 +96,7 @@ def draw_grid(screen):
             else:
                 pygame.draw.rect(screen, GRAY, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
     for (x, y) in obstacles:
-        pygame.draw.rect(screen, BROWN, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))  # Brown for crates/rocks
-        pygame.draw.circle(screen, GREEN, (x * TILE_SIZE + TILE_SIZE // 2, y * TILE_SIZE + TILE_SIZE // 2), TILE_SIZE // 3)  # Green for bushes
+        a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,image =Barrel_img)
+        ob_group.add(a)
     for (x, y) in walls:
         pygame.draw.rect(screen, DARK_GRAY, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))  # Dark gray for walls
