@@ -2,7 +2,7 @@ import pygame as pg
 import random,math
 import sys, subprocess
 from Load_texture import *
-from General import entity_grid,draw_grid,TILE_SIZE
+from General import entity_grid,draw_grid,TILE_SIZE,door_grid
 
 #change directory to this project file first
 # Screen dimensions
@@ -42,9 +42,10 @@ class BaseSprite(pg.sprite.Sprite):
 
 
 class Bullet(BaseSprite):
-    def __init__(self, x, y, target, owner, width=15, height=15, speed=BULLET_SPEED, color=(0, 100, 255)):
-        super().__init__(x, y, width, height, color)
-        
+    def __init__(self, x, y, target, owner, width=TILE_SIZE/2.5, height=TILE_SIZE/2.5, speed=BULLET_SPEED, color=(0, 100, 255),image = Fire_Charge_img):
+        super().__init__(x, y, width, height, color,image)
+        self.B_image = pg.transform.scale(image,(width*1.5,height*1.5))
+        self.image.blit(image,(-(((width*1.5)-width)),-(((height*1.5)-height))))
         self.speed = speed
         self.angle = Find_angle(x, y, target[0], target[1])
         self.x = x
@@ -96,7 +97,7 @@ class Bullet(BaseSprite):
 
 
 class Player(BaseSprite):
-    def __init__(self, x, y, width=35, height=35,image = Placholder_img):
+    def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img):
         super().__init__(x, y, width, height, RED,image)
         self.speed = 3
         self.hp = 100
@@ -126,6 +127,9 @@ class Player(BaseSprite):
                     self.rect.top < 0 or self.rect.bottom > screen_height or
                     pg.sprite.spritecollide(self, obstacles, False)):
                 self.rect.x, self.rect.y = original_x, original_y  # Undo movement
+
+            if pg.sprite.spritecollide(self,game.door,False):
+                game.aaa = 1
 
     def attack(self, enemies):
         # Check for collisions with enemies
@@ -162,7 +166,7 @@ class Player(BaseSprite):
 
 
 class Obstacle(BaseSprite):
-    def __init__(self, x, y, width=40, height=40,image= Placholder_img,indestructible = False):
+    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE,image= Placholder_img,indestructible = False):
         super().__init__(x, y, width, height, GREEN, image)
         self.pos = (x,y)
         self.indestructible = indestructible
@@ -170,7 +174,7 @@ class Obstacle(BaseSprite):
 
 
 class Enemy(BaseSprite):
-    def __init__(self, x, y, width=40, height=40, speed=2,bullet_speed = 5,image = Placholder_img):
+    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, speed=2,bullet_speed = 5,image = Placholder_img):
         super().__init__(x, y, width, height,(0,0,255),image )
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
@@ -186,11 +190,14 @@ class Enemy(BaseSprite):
         self.rect.y += self.direction[1] * self.speed
 
         # Collision with obstacles or screen boundaries
+       
         if (pg.sprite.spritecollide(self, obstacles, False) or
                 self.rect.left < 0 or self.rect.right > screen_width or
                 self.rect.top < 0 or self.rect.bottom > screen_height):
             self.rect.x, self.rect.y = original_x, original_y
             self.change_direction()
+
+
 
     def change_direction(self):
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
@@ -229,36 +236,39 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = False
         self.keys = pg.key.get_pressed()
-
+        self.aaa = 0
+        
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
         self.obstacles = pg.sprite.Group()
         self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
+        self.door = pg.sprite.Group()
         
 
         for i in range(len(entity_grid)):
             if i == 0:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
-                print(i)
+              
             else:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
 
-                
-
-            
+                  
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
 
     def run(self):
         self.running = True
-        aaa = 0
+        
         while self.running:
             self.clock.tick(60)  # Cap at 60 FPS
             self.handle_events()
-            if aaa == 0 :
+            if self.aaa == 0 :
+                self.update()
+                self.draw()
+            elif self.aaa == 1:
                 self.update()
                 self.draw()
             
@@ -278,6 +288,7 @@ class Game:
         self.player.update(self.keys, self.obstacles, self.enemies, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.enemies.update(self.obstacles, SCREEN_WIDTH, SCREEN_HEIGHT, self.player.rect.center)
         bullets.update()
+        self.check_clear()
 
 
     def draw(self):
@@ -292,6 +303,26 @@ class Game:
     def UI(self):
         pg.draw.rect(self.screen,(255,0,0),pg.Rect(10,10,200,40))
         pg.draw.rect(self.screen,(0,255,0),pg.Rect(10,10,self.player.hp *2,40))
+        
+
+    def check_clear(self):
+        if len(self.enemies) ==0 and self.aaa ==0 :
+            if len(self.door) == 0:
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                self.all_sprites.add(a)
+                self.door.add(a)
+     
+        elif self.aaa == 1 :
+            pass
+
+            #back_to_menu()
+        elif self.aaa==4:
+            #self.screen.blit(game_clear_img,(0,0))
+            #pg.display.flip()
+            #pg.time.wait(1500)
+            back_to_menu()
+      
+ 
 
 # To Non-san, pls make a button for this function
 def back_to_menu():

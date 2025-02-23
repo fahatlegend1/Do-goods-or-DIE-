@@ -9,6 +9,7 @@ NUM_ROOMS = 8
 NUM_OBSTACLES = 25
 NUM_WALLS = 10
 NUM_ENTITY = 8
+NUM_DOOR = 1
 
 # Colors
 BLACK = (0, 0, 0)
@@ -29,6 +30,7 @@ rooms = []
 obstacles = []
 walls = []
 entity_grid = []
+door_grid = []
 
 # Create map boundaries
 for x in range(GRID_WIDTH):
@@ -93,6 +95,14 @@ for _ in range(NUM_ENTITY):
             break
 
 
+for _ in range(NUM_DOOR):
+    while True:
+        x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
+        if grid[x][y] == 0:  # Place walls in open spaces
+            door_grid.append((x, y))
+            break
+
+
         
 
 
@@ -120,6 +130,3 @@ def draw_grid(screen,Obstacle,ob_group,BaseSprite,base_group):
             a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,indestructible = True,image = bedrock_texture)
             ob_group.add(a)  # Dark gray for walls
 
-    
-print(grid)
-print(entity_grid)
