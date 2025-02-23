@@ -89,8 +89,11 @@ class Bullet(BaseSprite):
         if pg.sprite.spritecollide(self,game.enemies,False):
             if self.owner == game.player:
                 a =pg.sprite.spritecollideany(self,game.enemies)
-                a.kill()
-                game.enemies.remove(a)
+                if a.indestructible == False:
+                    a.kill()
+                    game.enemies.remove(a)
+                else:
+                    a.hp -=10
                 self.kill()
                 bullets.remove(self)
 
@@ -100,7 +103,7 @@ class Player(BaseSprite):
     def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img):
         super().__init__(x, y, width, height, RED,image)
         self.speed = 3
-        self.hp = 1000000
+        self.hp = 1000
         self.alive = True
         self.image.blit(image,(0,0))
         
@@ -181,13 +184,15 @@ class Obstacle(BaseSprite):
 
 
 class Enemy(BaseSprite):
-    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, speed=2,bullet_speed = 5,image = Placholder_img):
+    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, speed=2,bullet_speed = 5,image = Placholder_img,indestructible= False):
         super().__init__(x, y, width, height,(0,0,255),image )
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         self.last_shot_time = 0  # Track the last time the enemy shot a bullet
         self.bullet_speed = bullet_speed
         self.image.blit(image,(0,0))
+        self.indestructible = indestructible
+        self.hp = 250
 
 
     def move(self, obstacles, screen_width, screen_height):
@@ -204,7 +209,10 @@ class Enemy(BaseSprite):
             self.rect.x, self.rect.y = original_x, original_y
             self.change_direction()
 
-
+    def c_alive(self):
+        if self.hp <= 0 :
+            print('boss dead')
+            self.kill()     
 
     def change_direction(self):
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
@@ -230,6 +238,7 @@ class Enemy(BaseSprite):
         """Update the enemy's position and handle shooting."""
         self.move(obstacles, screen_width, screen_height)
         self.shoot(target)
+        self.c_alive()
 
 
 num_scene = 0
@@ -260,6 +269,7 @@ class Game:
             else:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
+                
 
                   
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
@@ -267,14 +277,21 @@ class Game:
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
         
     def gen(self):
-
-        generate()
-        global door_grid
+        if self.scene == 3:
+            generate1()
+        else:
+            generate()
+        global door_grid,entity_grid
         entity_grid,door_grid = get()
         self.obstacles = pg.sprite.Group()
         self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.door = pg.sprite.Group()
+
+        if self.scene == 3:
+                a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*4,width=TILE_SIZE*4,indestructible=True)
+                self.enemies.add(a)
+
 
         for i in range(len(entity_grid)):
             if i == 0:
@@ -284,6 +301,7 @@ class Game:
             else:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
+                print(self.enemies)
         
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
