@@ -30,3 +30,6 @@ Fire_Charge_img = pg.transform.scale(back_ground,(25,25))
 
 back_ground = pg.image.load(r'Assets\Texture\game_clear.jpg').convert_alpha()
 game_clear_img = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
+
+back_ground = pg.image.load(r'Assets\Texture\hp bar\pixil-frame-5.png').convert_alpha()
+health_frame_img = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
