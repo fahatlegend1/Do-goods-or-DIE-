@@ -6,9 +6,9 @@ TILE_SIZE = 40
 GRID_WIDTH, GRID_HEIGHT = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 ROOM_MAX_SIZE, ROOM_MIN_SIZE = 8, 6
 NUM_ROOMS = 8
-NUM_OBSTACLES = 20
+NUM_OBSTACLES = 25
 NUM_WALLS = 10
-NUM_ENTITY = 4
+NUM_ENTITY = 8
 
 # Colors
 BLACK = (0, 0, 0)
@@ -28,7 +28,7 @@ grid = [[1 for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
 rooms = []
 obstacles = []
 walls = []
-entity = []
+entity_grid = []
 
 # Create map boundaries
 for x in range(GRID_WIDTH):
@@ -86,10 +86,14 @@ for _ in range(NUM_WALLS):
         grid[x][y] = 2  # Mark as wall
 
 for _ in range(NUM_ENTITY):
-    x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
-    if grid[x][y] == 0:  # Place walls in open spaces
-        entity.append((x, y))
-        grid[x][y] = 3  # Mark as wall
+    while True:
+        x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
+        if grid[x][y] == 0:  # Place walls in open spaces
+            entity_grid.append((x, y))
+            break
+
+
+        
 
 
 
@@ -118,3 +122,4 @@ def draw_grid(screen,Obstacle,ob_group,BaseSprite,base_group):
 
     
 print(grid)
+print(entity_grid)

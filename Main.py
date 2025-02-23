@@ -2,7 +2,7 @@ import pygame as pg
 import random,math
 import sys, subprocess
 from Load_texture import *
-from General import map_grid,draw_grid
+from General import entity_grid,draw_grid,TILE_SIZE
 
 #change directory to this project file first
 # Screen dimensions
@@ -143,7 +143,7 @@ class Player(BaseSprite):
                     y=self.rect.centery,
                     target=pg.mouse.get_pos(),
                     owner=self,
-                    speed=BULLET_SPEED,
+                    speed=BULLET_SPEED*1.15,
                     color=(255, 100, 255)  # Red bullets for enemies
                 )
                 self.last_shot_time = current_time
@@ -234,12 +234,20 @@ class Game:
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
         self.obstacles = pg.sprite.Group()
         self.background = pg.sprite.Group()
-        self.enemies = pg.sprite.Group(
-            Enemy(800, 500,image= skeleton_img),
-            Enemy(200, 300,image= skeleton_img),
-            Enemy(200, 400,image= skeleton_img)
-        )
+        self.enemies = pg.sprite.Group()
+        
 
+        for i in range(len(entity_grid)):
+            if i == 0:
+                self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
+                print(i)
+            else:
+                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
+                self.enemies.add(a)
+
+                
+
+            
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
