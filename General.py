@@ -32,80 +32,95 @@ walls = []
 entity_grid = []
 door_grid = []
 
-# Create map boundaries
-for x in range(GRID_WIDTH):
-    grid[x][0] = 2  # Top border
-    grid[x][GRID_HEIGHT - 1] = 2  # Bottom border
-for y in range(GRID_HEIGHT):
-    grid[0][y] = 2  # Left border
-    grid[GRID_WIDTH - 1][y] = 2  # Right border
-
-# Generate rooms
-class Room:
-    def __init__(self, x, y, w, h):
-        self.x, self.y = x, y
-        self.w, self.h = w, h
-        self.center = (x + w // 2, y + h // 2)
+def generate():
+    global grid 
+    global rooms 
+    global obstacles 
+    global walls 
+    global entity_grid 
+    global door_grid 
+    grid = [[1 for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
+    rooms = []
+    obstacles = []
+    walls = []
+    entity_grid = []
+    door_grid = []
     
-    def carve(self):
-        for i in range(self.x, self.x + self.w):
-            for j in range(self.y, self.y + self.h):
-                grid[i][j] = 0
+    # Create map boundaries
+    for x in range(GRID_WIDTH):
+        grid[x][0] = 2  # Top border
+        grid[x][GRID_HEIGHT - 1] = 2  # Bottom border
+    for y in range(GRID_HEIGHT):
+        grid[0][y] = 2  # Left border
+        grid[GRID_WIDTH - 1][y] = 2  # Right border
 
-def create_hallway(x1, y1, x2, y2):
-    if random.random() < 0.5:
-        for x in range(min(x1, x2), max(x1, x2) + 1):
-            grid[x][y1] = 0
-        for y in range(min(y1, y2), max(y1, y2) + 1):
-            grid[x2][y] = 0
-    else:
-        for y in range(min(y1, y2), max(y1, y2) + 1):
-            grid[x1][y] = 0
-        for x in range(min(x1, x2), max(x1, x2) + 1):
-            grid[x][y2] = 0
-
-for _ in range(NUM_ROOMS):
-    w = random.randint(ROOM_MIN_SIZE, ROOM_MAX_SIZE)
-    h = random.randint(ROOM_MIN_SIZE, ROOM_MAX_SIZE)
-    x = random.randint(1, GRID_WIDTH - w - 2)
-    y = random.randint(1, GRID_HEIGHT - h - 2)
-    new_room = Room(x, y, w, h)
-    rooms.append(new_room)
-    new_room.carve()
-    if len(rooms) > 1:
-        create_hallway(rooms[-2].center[0], rooms[-2].center[1], new_room.center[0], new_room.center[1])
+    # Generate rooms
+    class Room:
+        def __init__(self, x, y, w, h):
+            self.x, self.y = x, y
+            self.w, self.h = w, h
+            self.center = (x + w // 2, y + h // 2)
         
-for _ in range(NUM_OBSTACLES):
-    x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
-    if grid[x][y] == 0:  # Place obstacles only in open spaces
-        obstacles.append((x, y))
+        def carve(self):
+            for i in range(self.x, self.x + self.w):
+                for j in range(self.y, self.y + self.h):
+                    grid[i][j] = 0
 
-# Generate walls
-for _ in range(NUM_WALLS):
-    x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
-    if grid[x][y] == 0:  # Place walls in open spaces
-        walls.append((x, y))
-        grid[x][y] = 2  # Mark as wall
+    def create_hallway(x1, y1, x2, y2):
+        if random.random() < 0.5:
+            for x in range(min(x1, x2), max(x1, x2) + 1):
+                grid[x][y1] = 0
+            for y in range(min(y1, y2), max(y1, y2) + 1):
+                grid[x2][y] = 0
+        else:
+            for y in range(min(y1, y2), max(y1, y2) + 1):
+                grid[x1][y] = 0
+            for x in range(min(x1, x2), max(x1, x2) + 1):
+                grid[x][y2] = 0
 
-for _ in range(NUM_ENTITY):
-    while True:
+    for _ in range(NUM_ROOMS):
+        w = random.randint(ROOM_MIN_SIZE, ROOM_MAX_SIZE)
+        h = random.randint(ROOM_MIN_SIZE, ROOM_MAX_SIZE)
+        x = random.randint(1, GRID_WIDTH - w - 2)
+        y = random.randint(1, GRID_HEIGHT - h - 2)
+        new_room = Room(x, y, w, h)
+        rooms.append(new_room)
+        new_room.carve()
+        if len(rooms) > 1:
+            create_hallway(rooms[-2].center[0], rooms[-2].center[1], new_room.center[0], new_room.center[1])
+            
+    for _ in range(NUM_OBSTACLES):
+        x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
+        if grid[x][y] == 0:  # Place obstacles only in open spaces
+            obstacles.append((x, y))
+
+    # Generate walls
+    for _ in range(NUM_WALLS):
         x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
         if grid[x][y] == 0:  # Place walls in open spaces
-            entity_grid.append((x, y))
-            break
+            walls.append((x, y))
+            grid[x][y] = 2  # Mark as wall
 
+    for _ in range(NUM_ENTITY):
+        while True:
+            x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
+            if grid[x][y] == 0:  # Place walls in open spaces
+                entity_grid.append((x, y))
+                break
 
-for _ in range(NUM_DOOR):
-    while True:
-        x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
-        if grid[x][y] == 0:  # Place walls in open spaces
-            door_grid.append((x, y))
-            break
+    for _ in range(NUM_DOOR):
+        while True:
+            x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
+            if grid[x][y] == 0:  # Place walls in open spaces
+                door_grid.append((x, y))
+                break
 
-
+generate()
         
 
-
+def get():
+    return entity_grid,door_grid
+    
 
 
 

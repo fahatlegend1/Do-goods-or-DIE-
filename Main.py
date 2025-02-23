@@ -2,7 +2,7 @@ import pygame as pg
 import random,math
 import sys, subprocess
 from Load_texture import *
-from General import entity_grid,draw_grid,TILE_SIZE,door_grid
+from General import *
 
 #change directory to this project file first
 # Screen dimensions
@@ -100,7 +100,7 @@ class Player(BaseSprite):
     def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img):
         super().__init__(x, y, width, height, RED,image)
         self.speed = 3
-        self.hp = 100
+        self.hp = 1000000
         self.alive = True
         self.image.blit(image,(0,0))
         
@@ -128,8 +128,15 @@ class Player(BaseSprite):
                     pg.sprite.spritecollide(self, obstacles, False)):
                 self.rect.x, self.rect.y = original_x, original_y  # Undo movement
 
-            if pg.sprite.spritecollide(self,game.door,False):
-                game.aaa = 1
+            if pg.sprite.spritecollide(self,game.door,True):
+                game.scene += 1
+                game.door.empty()
+                game.all_sprites.empty()
+                # come back here to remove door
+                game.gen()
+                
+                
+                
 
     def attack(self, enemies):
         # Check for collisions with enemies
@@ -236,7 +243,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = False
         self.keys = pg.key.get_pressed()
-        self.aaa = 0
+        self.scene = 0
         
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
@@ -249,7 +256,7 @@ class Game:
         for i in range(len(entity_grid)):
             if i == 0:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
-              
+  
             else:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
@@ -258,6 +265,30 @@ class Game:
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
+        
+    def gen(self):
+
+        generate()
+        global door_grid
+        entity_grid,door_grid = get()
+        self.obstacles = pg.sprite.Group()
+        self.background = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
+        self.door = pg.sprite.Group()
+
+        for i in range(len(entity_grid)):
+            if i == 0:
+                
+                self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
+              
+            else:
+                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
+                self.enemies.add(a)
+        
+        draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
+
+        self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
+      
 
     def run(self):
         self.running = True
@@ -265,13 +296,18 @@ class Game:
         while self.running:
             self.clock.tick(60)  # Cap at 60 FPS
             self.handle_events()
-            if self.aaa == 0 :
+            if self.scene == 0 :
                 self.update()
                 self.draw()
-            elif self.aaa == 1:
+            elif self.scene == 1:
                 self.update()
                 self.draw()
-            
+            elif self.scene == 2:
+                self.update()
+                self.draw()
+            elif self.scene == 3:
+                self.update()
+                self.draw()
 
         pg.quit()
         sys.exit()
@@ -306,17 +342,32 @@ class Game:
         
 
     def check_clear(self):
-        if len(self.enemies) ==0 and self.aaa ==0 :
+        if len(self.enemies) ==0 and self.scene ==0 :
             if len(self.door) == 0:
                 a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
                 self.all_sprites.add(a)
                 self.door.add(a)
      
-        elif self.aaa == 1 :
-            pass
+        elif self.scene == 1 and len(self.enemies) ==0 :
+            if len(self.door) == 0:
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                self.all_sprites.add(a)
+                self.door.add(a)
+        
+        elif self.scene == 2 and len(self.enemies) ==0 :
+            if len(self.door) == 0:
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                self.all_sprites.add(a)
+                self.door.add(a)
+
+        elif self.scene == 3  and len(self.enemies) ==0:
+            if len(self.door) == 0:
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                self.all_sprites.add(a)
+                self.door.add(a)
 
             #back_to_menu()
-        elif self.aaa==4:
+        elif self.scene==4:
             #self.screen.blit(game_clear_img,(0,0))
             #pg.display.flip()
             #pg.time.wait(1500)
