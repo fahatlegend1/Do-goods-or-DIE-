@@ -34,7 +34,7 @@ class BaseSprite(pg.sprite.Sprite):
     def __init__(self, x, y, width, height, color,image = Placholder_img):
         super().__init__()
         self.image = pg.Surface((width, height),pygame.SRCALPHA) # del srcalpha if u wanna see hit box or enable next line of code
-        self.image.fill(color)
+        #self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
         self.last_shot_time = 0
         self.image.blit(image,(0,0))
@@ -103,7 +103,7 @@ class Player(BaseSprite):
     def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img):
         super().__init__(x, y, width, height, RED,image)
         self.speed = 3
-        self.hp = 1000
+        self.hp = 100
         self.alive = True
         self.image.blit(image,(0,0))
         
@@ -252,7 +252,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = False
         self.keys = pg.key.get_pressed()
-        self.scene = 2
+        self.scene = 0
         
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
@@ -403,3 +403,9 @@ def back_to_menu():
 if __name__ == "__main__":
     game = Game()
     game.run()
+
+
+
+
+#thing todo 1) add attack pattern for boss    2) texture    3)boss hp bar
+            
