@@ -308,6 +308,19 @@ class Game:
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
       
 
+    def game_end(self, win):
+        if win == 0:
+            subprocess.Popen(['python', 'GameOverScreen.py'])
+            print('Game Over')
+            pg.quit()
+            sys.exit()
+
+        elif win == 1:
+            subprocess.Popen(['python', 'GameClearScreen.py'])
+            print('Game Clear')
+            pg.quit()
+            sys.exit()
+
     def run(self):
         self.running = True
         
@@ -326,6 +339,13 @@ class Game:
             elif self.scene == 3:
                 self.update()
                 self.draw()
+            if self.player.hp <= 0:
+                self.game_end(0)
+            
+                '''print("Game Over!")
+                subprocess.Popen(['python', 'GameOverScreen.py'])
+                pg.quit()
+                sys.exit()'''
 
         pg.quit()
         sys.exit()
@@ -398,6 +418,8 @@ def back_to_menu():
     subprocess.Popen(['python', 'game_opening.py'])
     pg.quit()
     sys.exit()
+
+
 
 # Run the game
 if __name__ == "__main__":
