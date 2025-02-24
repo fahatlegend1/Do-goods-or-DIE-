@@ -1,8 +1,38 @@
 import pygame as pg
+
+from PIL import Image,ImageSequence
+
+
 pg.init()
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+
+
+
+
+def loadGIF(filename):
+    pilImage = Image.open(r'Assets/Animate'+'/'+filename)
+    frames = []
+    for frame in ImageSequence.Iterator(pilImage):
+        frame = frame.convert('RGBA')
+        pygameImage = pg.image.fromstring(
+            frame.tobytes(), frame.size, frame.mode).convert_alpha()
+        frames.append(pygameImage)
+    return frames
+
+def ResizeGIF(frames):
+    b = []
+    for i in range(len(frames)):
+        a = pg.transform.scale(frames[i],(240,240))
+        b.append(a)
+    return b
+
+
+
+boss_image_group = loadGIF('boss.gif')
+boss_image_group = ResizeGIF(boss_image_group)
+
 
 back_ground = pg.image.load(r'Assets\Texture\background1.jpg').convert_alpha()
 background = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -33,3 +63,4 @@ game_clear_img = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
 back_ground = pg.image.load(r'Assets\Texture\hp bar\pixil-frame-5.png').convert_alpha()
 health_frame_img = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
+

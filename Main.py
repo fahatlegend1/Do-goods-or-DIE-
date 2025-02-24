@@ -12,10 +12,12 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-BLACK = (0, 0, 0)
+BLACK = (0, 0, 0)  
+EMPTY = pg.Color(0,0,0,0)
 
 BULLET_SPEED = 6
 BULLET_COOLDOWN = 1500
+SKILL_COOLDOWN = 3000
 
 all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
@@ -31,13 +33,34 @@ def Find_angle(x,y,t_x,t_y):
 
 # Base Sprite class
 class BaseSprite(pg.sprite.Sprite):
-    def __init__(self, x, y, width, height, color,image = Placholder_img):
+    def __init__(self, x, y, width, height, color,image = Placholder_img,gif = False):
         super().__init__()
         self.image = pg.Surface((width, height),pygame.SRCALPHA) # del srcalpha if u wanna see hit box or enable next line of code
         #self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
         self.last_shot_time = 0
         self.image.blit(image,(0,0))
+        self.gif_index = 0
+        self.gif = gif
+        self.width = width
+        self.height = height
+        
+
+    def animate(self):
+        if self.gif != False:
+            self.image.fill(EMPTY)  #change back to empty
+            self.gif_index += 1
+            if self.gif_index >= len(self.gif):
+                self.gif_index = 0
+            if game.player.rect.centerx - self.rect.centerx <0:
+                self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(-self.width/2,-self.width+40)) 
+            else:
+                self.image.blit(self.gif[self.gif_index],(-self.width/2 ,-self.width+40)) 
+          
+            
+        
+        
+        
 
 
 
@@ -184,15 +207,21 @@ class Obstacle(BaseSprite):
 
 
 class Enemy(BaseSprite):
-    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, speed=2,bullet_speed = 5,image = Placholder_img,indestructible= False):
-        super().__init__(x, y, width, height,(0,0,255),image )
+    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, speed=2,bullet_speed = 5,image = Placholder_img,indestructible= False,gif = False,bullet_size = TILE_SIZE/2.5):
+        super().__init__(x, y, width, height,(0,0,255),image ,gif)
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
-        self.last_shot_time = 0  # Track the last time the enemy shot a bullet
+        self.last_shot_time = pg.time.get_ticks() - 100*random.randint(0,10)  # Track the last time the enemy shot a bullet
         self.bullet_speed = bullet_speed
         self.image.blit(image,(0,0))
         self.indestructible = indestructible
         self.hp = 250
+        self.bullet_size = bullet_size
+        self.last_skill_time = pg.time.get_ticks()
+        if width > TILE_SIZE:
+            self.boss = True
+        else:
+            self.boss = False
 
 
     def move(self, obstacles, screen_width, screen_height):
@@ -230,15 +259,38 @@ class Enemy(BaseSprite):
                 target=target,
                 owner=self,
                 speed=self.bullet_speed,
-                color=(255, 0, 0)  # Red bullets for enemies
+                color=(255, 0, 0),  # Red bullets for enemies
+                width= self.bullet_size,
+                height= self.bullet_size
             )
             self.last_shot_time = current_time
+
+    def skill(self,target):
+        current_time = pg.time.get_ticks()
+        if current_time - self.last_skill_time > SKILL_COOLDOWN:
+            for i in range(0,int(SCREEN_WIDTH/TILE_SIZE),2):
+                a = i*TILE_SIZE    
+                Bullet(
+                    x=a,
+                    y=TILE_SIZE*3,
+                    target=target,
+                    owner=self,
+                    speed=self.bullet_speed,
+                    color=(255, 0, 0),  # Red bullets for enemies
+                    width= self.bullet_size,
+                    height= self.bullet_size)
+            self.last_skill_time = current_time
+                      
 
     def update(self, obstacles, screen_width, screen_height, target):
         """Update the enemy's position and handle shooting."""
         self.move(obstacles, screen_width, screen_height)
         self.shoot(target)
         self.c_alive()
+        self.animate()
+        if self.boss == True:
+            self.skill(target)
+        
 
 
 num_scene = 0
@@ -289,7 +341,7 @@ class Game:
         self.door = pg.sprite.Group()
 
         if self.scene == 3:
-                a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*4,width=TILE_SIZE*4,indestructible=True)
+                a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5)
                 self.enemies.add(a)
 
 
