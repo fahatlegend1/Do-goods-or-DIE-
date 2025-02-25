@@ -427,8 +427,9 @@ class Game:
         pg.display.flip()
     
     def UI(self):
-        pg.draw.rect(self.screen,(255,0,0),pg.Rect(10,10,200,40))
-        pg.draw.rect(self.screen,(0,255,0),pg.Rect(10,10,self.player.hp *2,40))
+        pg.draw.rect(self.screen,(WHITE),pg.Rect(22,10,200,40))
+        pg.draw.rect(self.screen,(GREEN),pg.Rect(22,10,self.player.hp *2,40))
+        self.screen.blit(health_frame_img,(0,0))
         
 
     def check_clear(self):

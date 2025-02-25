@@ -28,10 +28,12 @@ def ResizeGIF(frames):
         b.append(a)
     return b
 
-
+#load gif
 
 boss_image_group = loadGIF('boss.gif')
 boss_image_group = ResizeGIF(boss_image_group)
+
+#load image
 
 
 back_ground = pg.image.load(r'Assets\Texture\background1.jpg').convert_alpha()
@@ -61,6 +63,7 @@ Fire_Charge_img = pg.transform.scale(back_ground,(25,25))
 back_ground = pg.image.load(r'Assets\Texture\game_clear.jpg').convert_alpha()
 game_clear_img = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
-back_ground = pg.image.load(r'Assets\Texture\hp bar\pixil-frame-5.png').convert_alpha()
-health_frame_img = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
+back_ground = pg.image.load(r'Assets\Texture\hp bar\hp bar.png').convert_alpha()
+health_frame_img = pg.transform.scale(back_ground,(SCREEN_WIDTH/5.3,SCREEN_HEIGHT/12))
+
 
