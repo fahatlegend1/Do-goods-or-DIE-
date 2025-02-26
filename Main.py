@@ -161,7 +161,7 @@ class Player(BaseSprite):
 
             if pg.sprite.spritecollide(self,game.door,True):
                 game.scene += 1
-                if game.scene == 4:
+                if game.scene == 5:
                     game.scene = 0
                 game.door.empty()
                 game.all_sprites.empty()
@@ -354,6 +354,8 @@ class Game:
             generate1()
         else:
             generate()
+        if self.scene ==4:
+            room_1l()
         global door_grid,entity_grid
         entity_grid,door_grid = get()
         self.obstacles = pg.sprite.Group()
@@ -364,6 +366,7 @@ class Game:
         if self.scene == 3:
                 a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5,speed=0)
                 self.enemies.add(a)
+
 
 
         for i in range(len(entity_grid)):
@@ -410,6 +413,9 @@ class Game:
                 self.update()
                 self.draw()
             elif self.scene == 3:
+                self.update()
+                self.draw()
+            elif self.scene == 4:
                 self.update()
                 self.draw()
             if self.player.hp <= 0:

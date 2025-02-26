@@ -1,5 +1,6 @@
 import random,pygame
 from Load_texture import background,Barrel_img,bedrock_img,stonebrick_img
+from room_1 import room_1
 
 WIDTH, HEIGHT = 1200, 720
 TILE_SIZE = 40
@@ -25,13 +26,19 @@ Barrel_texture = pygame.transform.scale(Barrel_img, (TILE_SIZE, TILE_SIZE))
 bedrock_texture = pygame.transform.scale(bedrock_img, (TILE_SIZE, TILE_SIZE))
 stonebrick_texture = pygame.transform.scale(stonebrick_img, (TILE_SIZE, TILE_SIZE))
 
-
 grid = [[1 for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
 rooms = []
 obstacles = []
 walls = []
 entity_grid = []
 door_grid = []
+
+def room_1l():
+    global grid,obstacles,door_grid,entity_grid
+    entity_grid = [(4,4)]
+    obstacles = []
+    door_grid = [((WIDTH/2)/GRID_WIDTH,(HEIGHT/6)/GRID_WIDTH)]
+    grid = room_1
 
 def generate1():
     global grid 
