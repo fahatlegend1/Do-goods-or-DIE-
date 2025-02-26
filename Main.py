@@ -142,6 +142,11 @@ class Player(BaseSprite):
             if keys[pg.K_d]:
                 self.rect.x += self.speed
 
+            # Prevent moving outside boundaries or colliding with obstacles
+            if (self.rect.left < 0 or self.rect.right > screen_width or
+                    pg.sprite.spritecollide(self, obstacles, False)):
+                self.rect.x = original_x # Undo movement
+
             # Y Direction
             if keys[pg.K_w]:
                 self.rect.y -= self.speed
@@ -149,10 +154,9 @@ class Player(BaseSprite):
                 self.rect.y += self.speed
 
             # Prevent moving outside boundaries or colliding with obstacles
-            if (self.rect.left < 0 or self.rect.right > screen_width or
-                    self.rect.top < 0 or self.rect.bottom > screen_height or
+            if (self.rect.top < 0 or self.rect.bottom > screen_height or
                     pg.sprite.spritecollide(self, obstacles, False)):
-                self.rect.x, self.rect.y = original_x, original_y  # Undo movement
+                self.rect.y =  original_y  # Undo movement
 
             if pg.sprite.spritecollide(self,game.door,True):
                 game.scene += 1
