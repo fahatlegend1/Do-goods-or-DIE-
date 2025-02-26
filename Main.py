@@ -161,6 +161,8 @@ class Player(BaseSprite):
 
             if pg.sprite.spritecollide(self,game.door,True):
                 game.scene += 1
+                if game.scene == 4:
+                    game.scene = 0
                 game.door.empty()
                 game.all_sprites.empty()
                 # come back here to remove door
@@ -360,7 +362,7 @@ class Game:
         self.door = pg.sprite.Group()
 
         if self.scene == 3:
-                a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5)
+                a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5,speed=0)
                 self.enemies.add(a)
 
 
