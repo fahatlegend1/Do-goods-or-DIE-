@@ -456,8 +456,9 @@ class Game:
                 self.door.add(a)
 
         elif self.scene == 3  and len(self.enemies) ==0:
+            print('sss')
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                a =BaseSprite(SCREEN_WIDTH-TILE_SIZE/2,SCREEN_HEIGHT-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
                 self.all_sprites.add(a)
                 self.door.add(a)
 
