@@ -28,7 +28,7 @@ def ResizeGIF(frames,x,y):
         b.append(a)
     return b
 
-def TakeOnly(frames,a):
+def TakeOnly(frames,a,double = False):
     b= []
     for i in range(a):
         a = frames[i]
@@ -44,6 +44,7 @@ boss_image_group = TakeOnly(boss_image_group,24)
 
 penguin_image_group = loadGIF('penguin.gif')
 penguin_image_group = ResizeGIF(penguin_image_group,80,80)
+
 
 #load image
 

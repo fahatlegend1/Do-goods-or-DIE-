@@ -34,7 +34,8 @@ entity_grid = []
 door_grid = []
 
 def room_1l():
-    global grid,obstacles,door_grid,entity_grid
+    global grid,obstacles,door_grid,entity_grid,walls
+    walls = []
     entity_grid = [(4,4)]
     obstacles = []
     door_grid = [((WIDTH/2)/GRID_WIDTH,(HEIGHT/6)/GRID_WIDTH)]

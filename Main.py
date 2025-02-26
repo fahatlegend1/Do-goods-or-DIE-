@@ -56,6 +56,20 @@ class BaseSprite(pg.sprite.Sprite):
                 self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(-self.width/2,-self.width+40)) 
             else:
                 self.image.blit(self.gif[self.gif_index],(-self.width/2 ,-self.width+40)) 
+
+    def animate_real(self):
+        if self.gif != False:
+            self.image.fill(EMPTY)  #change back to empty
+            self.gif_index += 1
+            if self.gif_index >= len(self.gif):
+                self.gif_index = 0
+            if game.player.rect.centerx - self.rect.centerx <0:
+                self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(0,0)) 
+            else:
+                self.image.blit(self.gif[self.gif_index],(0 ,0))   
+    
+    def update(self):
+        self.animate_real()
           
             
         
@@ -333,6 +347,7 @@ class Game:
         self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.door = pg.sprite.Group()
+        self.Animate = pg.sprite.Group()
         
 
         for i in range(len(entity_grid)):
@@ -347,7 +362,7 @@ class Game:
                   
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
-        self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
+        self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies,*self.Animate)
         
     def gen(self):
         if self.scene == 3:
@@ -362,10 +377,16 @@ class Game:
         self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.door = pg.sprite.Group()
+        self.Animate = pg.sprite.Group()
 
         if self.scene == 3:
                 a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5,speed=0)
                 self.enemies.add(a)
+        elif self.scene == 4:
+            a = BaseSprite(SCREEN_WIDTH/2-TILE_SIZE,TILE_SIZE*3,TILE_SIZE*2,TILE_SIZE*2,BLACK,gif = penguin_image_group)
+            self.Animate.add(a)
+
+          
 
 
 
@@ -381,7 +402,7 @@ class Game:
         
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
-        self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies)
+        self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies,*self.Animate)
       
 
     def game_end(self, win):
@@ -442,8 +463,8 @@ class Game:
         self.enemies.update(self.obstacles, SCREEN_WIDTH, SCREEN_HEIGHT, self.player.rect.center)
         bullets.update()
         self.check_clear()
-
-
+        self.Animate.update()
+      
     def draw(self):
         self.screen.fill(BLACK)
         self.screen.blit(background,(0,0))
