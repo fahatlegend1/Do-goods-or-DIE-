@@ -1,10 +1,17 @@
 import pygame as pg
 import random,math
-import sys, subprocess
+import sys, subprocess, socket
 from Load_texture import *
 from General import *
 
-#change directory to this project file first
+# Multiplayer Setup
+HOST_IP = "127.0.0.1"
+PORT = 4242
+player_id = "Player1"
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+HOST_Address = (HOST_IP, PORT)
+
+# Change directory to this project file first
 # Screen dimensions
 SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
 
@@ -57,10 +64,7 @@ class BaseSprite(pg.sprite.Sprite):
             else:
                 self.image.blit(self.gif[self.gif_index],(-self.width/2 ,-self.width+40)) 
           
-            
-        
-        
-        
+
 
 
 
@@ -154,14 +158,16 @@ class Player(BaseSprite):
                     pg.sprite.spritecollide(self, obstacles, False)):
                 self.rect.x, self.rect.y = original_x, original_y  # Undo movement
 
+            move_message = f"Move: {player_id} {self.rect.x} {self.rect.y}"
+            client.sendto(move_message.encode(), (HOST_Address))
+
             if pg.sprite.spritecollide(self,game.door,True):
                 game.scene += 1
                 game.door.empty()
                 game.all_sprites.empty()
                 # come back here to remove door
                 game.gen()
-                
-                
+              
                 
 
     def attack(self, enemies):
