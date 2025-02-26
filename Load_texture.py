@@ -33,6 +33,9 @@ def ResizeGIF(frames,x,y):
 boss_image_group = loadGIF('boss.gif')
 boss_image_group = ResizeGIF(boss_image_group,240,240)
 
+penguin_image_group = loadGIF('penguin.gif')
+penguin_image_group = ResizeGIF(penguin_image_group,80,80)
+
 #load image
 
 

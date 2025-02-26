@@ -17,7 +17,7 @@ EMPTY = pg.Color(0,0,0,0)
 
 BULLET_SPEED = 6
 BULLET_COOLDOWN = 1500
-SKILL_COOLDOWN = 3000
+SKILL_COOLDOWN = 4000
 
 all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
@@ -102,6 +102,7 @@ class Bullet(BaseSprite):
                 pass
             else:
                 pg.sprite.spritecollide(self,game.obstacles,True)
+                #random loot herer
             self.kill()
             bullets.remove(self)
         if pg.sprite.spritecollide(self,[game.player],False): # all player take damage
@@ -272,17 +273,31 @@ class Enemy(BaseSprite):
     def skill(self,target):
         current_time = pg.time.get_ticks()
         if current_time - self.last_skill_time > SKILL_COOLDOWN:
-            for i in range(0,int(SCREEN_WIDTH/TILE_SIZE),2):
-                a = i*TILE_SIZE    
-                Bullet(
-                    x=a,
-                    y=TILE_SIZE*3,
-                    target=target,
-                    owner=self,
-                    speed=self.bullet_speed,
-                    color=(255, 0, 0),  # Red bullets for enemies
-                    width= self.bullet_size,
-                    height= self.bullet_size)
+            if random.randint(1,10) <= 8 :
+                for i in range(0,int(SCREEN_WIDTH/TILE_SIZE),2):
+                    a = i*TILE_SIZE    
+                    Bullet(
+                        x=a,
+                        y=TILE_SIZE*3,
+                        target=target,
+                        owner=self,
+                        speed=self.bullet_speed,
+                        color=(255, 0, 0),  # Red bullets for enemies
+                        width= self.bullet_size,
+                        height= self.bullet_size)
+            else:
+                for i in range(0,int(SCREEN_WIDTH/TILE_SIZE),2):
+                    a = i*TILE_SIZE    
+                    Bullet(
+                        x=a,
+                        y=SCREEN_HEIGHT-TILE_SIZE*3,
+                        target=(a,0),
+                        owner=self,
+                        speed=self.bullet_speed,
+                        color=(255, 0, 0),  # Red bullets for enemies
+                        width= self.bullet_size,
+                        height= self.bullet_size)                        
+            
             self.last_skill_time = current_time
                       
 
@@ -308,7 +323,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = False
         self.keys = pg.key.get_pressed()
-        self.scene = 0
+        self.scene = 2
         
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
@@ -322,7 +337,7 @@ class Game:
             if i == 0:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
   
-            else:
+            elif len(entity_grid) > 1:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
                 
@@ -354,7 +369,7 @@ class Game:
                 
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
               
-            else:
+            elif len(entity_grid) > 1:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
                 print(self.enemies)
@@ -456,14 +471,20 @@ class Game:
                 self.door.add(a)
 
         elif self.scene == 3  and len(self.enemies) ==0:
-            print('sss')
             if len(self.door) == 0:
-                a =BaseSprite(SCREEN_WIDTH-TILE_SIZE/2,SCREEN_HEIGHT-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
+                print('aaaaaaaa')
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
                 self.all_sprites.add(a)
                 self.door.add(a)
 
-            #back_to_menu()
-        elif self.scene==4:
+        elif self.scene == 4  and len(self.enemies) ==0:
+            if len(self.door) == 0:
+                print('aaaaaaaa')
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
+                self.all_sprites.add(a)
+                self.door.add(a)
+
+        elif self.scene==5:
             #self.screen.blit(game_clear_img,(0,0))
             #pg.display.flip()
             #pg.time.wait(1500)

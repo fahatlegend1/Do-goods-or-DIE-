@@ -61,7 +61,32 @@ def generate1():
         grid[GRID_WIDTH - 1][y] = 2  # Right border  
 
    
+def generate2():
+    global grid 
+    global rooms 
+    global obstacles 
+    global walls 
+    global entity_grid 
+    global door_grid 
+    grid = [[0 for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
+    rooms = []
+    obstacles = []
+    walls = []
+    entity_grid = [(10,10),(int(GRID_WIDTH/2),int((GRID_HEIGHT)/2))]
+    door_grid = [(WIDTH/GRID_WIDTH,HEIGHT/GRID_HEIGHT)]
+    print(entity_grid)
 
+    for _ in range(NUM_OBSTACLES):
+        x, y = random.randint(1, GRID_WIDTH - 2), random.randint(1, GRID_HEIGHT - 2)
+        if grid[x][y] == 0:  # Place obstacles only in open spaces
+            obstacles.append((x, y))
+
+    for x in range(GRID_WIDTH):
+        grid[x][0] = 2  # Top border
+        grid[x][GRID_HEIGHT - 1] = 2  # Bottom border
+    for y in range(GRID_HEIGHT):
+        grid[0][y] = 2  # Left border
+        grid[GRID_WIDTH - 1][y] = 2  # Right border  
  
 
 
