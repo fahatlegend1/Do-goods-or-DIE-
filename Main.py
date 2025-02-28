@@ -1,17 +1,10 @@
 import pygame as pg
 import random,math
-import sys, subprocess, socket
+import sys, subprocess
 from Load_texture import *
 from General import *
 
-# Multiplayer Setup
-HOST_IP = "127.0.0.1"
-PORT = 4242
-player_id = "Player1"
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-HOST_Address = (HOST_IP, PORT)
-
-# Change directory to this project file first
+#change directory to this project file first
 # Screen dimensions
 SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
 
@@ -24,7 +17,7 @@ EMPTY = pg.Color(0,0,0,0)
 
 BULLET_SPEED = 6
 BULLET_COOLDOWN = 1500
-SKILL_COOLDOWN = 3000
+SKILL_COOLDOWN = 4000
 
 all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
@@ -64,7 +57,10 @@ class BaseSprite(pg.sprite.Sprite):
             else:
                 self.image.blit(self.gif[self.gif_index],(-self.width/2 ,-self.width+40)) 
           
-
+            
+        
+        
+        
 
 
 
@@ -106,6 +102,7 @@ class Bullet(BaseSprite):
                 pass
             else:
                 pg.sprite.spritecollide(self,game.obstacles,True)
+                #random loot herer
             self.kill()
             bullets.remove(self)
         if pg.sprite.spritecollide(self,[game.player],False): # all player take damage
@@ -146,6 +143,11 @@ class Player(BaseSprite):
             if keys[pg.K_d]:
                 self.rect.x += self.speed
 
+            # Prevent moving outside boundaries or colliding with obstacles
+            if (self.rect.left < 0 or self.rect.right > screen_width or
+                    pg.sprite.spritecollide(self, obstacles, False)):
+                self.rect.x = original_x # Undo movement
+
             # Y Direction
             if keys[pg.K_w]:
                 self.rect.y -= self.speed
@@ -153,21 +155,20 @@ class Player(BaseSprite):
                 self.rect.y += self.speed
 
             # Prevent moving outside boundaries or colliding with obstacles
-            if (self.rect.left < 0 or self.rect.right > screen_width or
-                    self.rect.top < 0 or self.rect.bottom > screen_height or
+            if (self.rect.top < 0 or self.rect.bottom > screen_height or
                     pg.sprite.spritecollide(self, obstacles, False)):
-                self.rect.x, self.rect.y = original_x, original_y  # Undo movement
-
-            move_message = f"Move: {player_id} {self.rect.x} {self.rect.y}"
-            client.sendto(move_message.encode(), (HOST_Address))
+                self.rect.y =  original_y  # Undo movement
 
             if pg.sprite.spritecollide(self,game.door,True):
                 game.scene += 1
+                if game.scene == 5:
+                    game.scene = 0
                 game.door.empty()
                 game.all_sprites.empty()
                 # come back here to remove door
                 game.gen()
-              
+                
+                
                 
 
     def attack(self, enemies):
@@ -274,17 +275,31 @@ class Enemy(BaseSprite):
     def skill(self,target):
         current_time = pg.time.get_ticks()
         if current_time - self.last_skill_time > SKILL_COOLDOWN:
-            for i in range(0,int(SCREEN_WIDTH/TILE_SIZE),2):
-                a = i*TILE_SIZE    
-                Bullet(
-                    x=a,
-                    y=TILE_SIZE*3,
-                    target=target,
-                    owner=self,
-                    speed=self.bullet_speed,
-                    color=(255, 0, 0),  # Red bullets for enemies
-                    width= self.bullet_size,
-                    height= self.bullet_size)
+            if random.randint(1,10) <= 8 :
+                for i in range(0,int(SCREEN_WIDTH/TILE_SIZE),2):
+                    a = i*TILE_SIZE    
+                    Bullet(
+                        x=a,
+                        y=TILE_SIZE*3,
+                        target=target,
+                        owner=self,
+                        speed=self.bullet_speed,
+                        color=(255, 0, 0),  # Red bullets for enemies
+                        width= self.bullet_size,
+                        height= self.bullet_size)
+            else:
+                for i in range(0,int(SCREEN_WIDTH/TILE_SIZE),2):
+                    a = i*TILE_SIZE    
+                    Bullet(
+                        x=a,
+                        y=SCREEN_HEIGHT-TILE_SIZE*3,
+                        target=(a,0),
+                        owner=self,
+                        speed=self.bullet_speed,
+                        color=(255, 0, 0),  # Red bullets for enemies
+                        width= self.bullet_size,
+                        height= self.bullet_size)                        
+            
             self.last_skill_time = current_time
                       
 
@@ -310,7 +325,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = False
         self.keys = pg.key.get_pressed()
-        self.scene = 0
+        self.scene = 2
         
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
@@ -324,7 +339,7 @@ class Game:
             if i == 0:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
   
-            else:
+            elif len(entity_grid) > 1:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
                 
@@ -339,6 +354,8 @@ class Game:
             generate1()
         else:
             generate()
+        if self.scene ==4:
+            room_1l()
         global door_grid,entity_grid
         entity_grid,door_grid = get()
         self.obstacles = pg.sprite.Group()
@@ -347,8 +364,9 @@ class Game:
         self.door = pg.sprite.Group()
 
         if self.scene == 3:
-                a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5)
+                a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5,speed=0)
                 self.enemies.add(a)
+
 
 
         for i in range(len(entity_grid)):
@@ -356,7 +374,7 @@ class Game:
                 
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
               
-            else:
+            elif len(entity_grid) > 1:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
                 print(self.enemies)
@@ -395,6 +413,9 @@ class Game:
                 self.update()
                 self.draw()
             elif self.scene == 3:
+                self.update()
+                self.draw()
+            elif self.scene == 4:
                 self.update()
                 self.draw()
             if self.player.hp <= 0:
@@ -459,12 +480,19 @@ class Game:
 
         elif self.scene == 3  and len(self.enemies) ==0:
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                print('aaaaaaaa')
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
                 self.all_sprites.add(a)
                 self.door.add(a)
 
-            #back_to_menu()
-        elif self.scene==4:
+        elif self.scene == 4  and len(self.enemies) ==0:
+            if len(self.door) == 0:
+                print('aaaaaaaa')
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
+                self.all_sprites.add(a)
+                self.door.add(a)
+
+        elif self.scene==5:
             #self.screen.blit(game_clear_img,(0,0))
             #pg.display.flip()
             #pg.time.wait(1500)

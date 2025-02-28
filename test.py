@@ -10,7 +10,6 @@ keys = pg.key.get_pressed()
 scene = 0
 
 
-
 while running:
           # Cap at 60 FPS
         for event in pg.event.get():
