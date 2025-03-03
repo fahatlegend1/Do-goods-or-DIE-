@@ -4,6 +4,7 @@ import sys, subprocess
 from Load_texture import *
 from General import *
 
+
 #change directory to this project file first
 # Screen dimensions
 SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
@@ -21,7 +22,7 @@ SKILL_COOLDOWN = 4000
 
 all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
-
+SCORE = 0
 
 def Find_angle(x,y,t_x,t_y):
     angle = math.atan2(t_y-y, t_x-x) #get angle to target in radians
@@ -44,12 +45,17 @@ class BaseSprite(pg.sprite.Sprite):
         self.gif = gif
         self.width = width
         self.height = height
+        self.fff = 1
         
 
     def animate(self):
         if self.gif != False:
-            self.image.fill(EMPTY)  #change back to empty
-            self.gif_index += 1
+            self.image.fill(EMPTY)  #change back to empty       #idk what this function d0 anymore
+            if self.fff ==0:
+                self.gif_index += 1
+                self.fff=1
+            else:
+                self.fff = 0
             if self.gif_index >= len(self.gif):
                 self.gif_index = 0
             if game.player.rect.centerx - self.rect.centerx <0:
@@ -60,7 +66,11 @@ class BaseSprite(pg.sprite.Sprite):
     def animate_real(self):
         if self.gif != False:
             self.image.fill(EMPTY)  #change back to empty
-            self.gif_index += 1
+            if self.fff== 0:
+                self.gif_index += 1
+                self.fff=3
+            else:
+                self.fff -=1
             if self.gif_index >= len(self.gif):
                 self.gif_index = 0
             if game.player.rect.centerx - self.rect.centerx <0:
@@ -73,9 +83,6 @@ class BaseSprite(pg.sprite.Sprite):
           
             
         
-        
-        
-
 
 
 class Bullet(BaseSprite):
@@ -104,7 +111,6 @@ class Bullet(BaseSprite):
         self.y += self.dy
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
-
         # Remove bullets after a certain time
         if pg.time.get_ticks() > self.dele:
             self.kill()
@@ -124,14 +130,17 @@ class Bullet(BaseSprite):
                 self.kill()
                 bullets.remove(self)
                 game.player.hp -= 10
+                game.player.score -=1
         if pg.sprite.spritecollide(self,game.enemies,False):
             if self.owner == game.player:
                 a =pg.sprite.spritecollideany(self,game.enemies)
                 if a.indestructible == False:
                     a.kill()
                     game.enemies.remove(a)
+                    game.player.score +=5
                 else:
                     a.hp -=10
+                    game.player.score +=5
                 self.kill()
                 bullets.remove(self)
 
@@ -144,6 +153,7 @@ class Player(BaseSprite):
         self.hp = 100
         self.alive = True
         self.image.blit(image,(0,0))
+        self.score =0
         
 
     def move(self, keys, obstacles, screen_width, screen_height):
@@ -225,6 +235,12 @@ class Obstacle(BaseSprite):
         self.pos = (x,y)
         self.indestructible = indestructible
 
+class Drop(Obstacle):
+    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, image=Placholder_img, indestructible=True):
+        super().__init__(x, y, width, height, image, indestructible)
+        self.item_index = random.randint(0,3,1)
+
+#spawn drop neeeeeeeeeeeeeed
 
 
 class Enemy(BaseSprite):

@@ -2,6 +2,8 @@ import pygame
 import sys, subprocess
 import random, math
 
+
+
 # Initialize Pygame
 pygame.init()
 
@@ -80,13 +82,14 @@ def game_over_screen(score, offset):
 
 def main():
     running = True
-    score = random.randint(0, 100)  # Random score for demonstration
+    score = 0  # Random score for demonstration
     game_over_sound.play()  # Play the game over sound
 
     # Create a list to store particles for the confetti effect
     particles = []
 
     offset = 0  # Used to animate the background and text
+
     while running:
         screen.fill(BLACK)
 
@@ -113,7 +116,7 @@ def main():
                 if event.key == pygame.K_q:  # Press Q to quit
                     running = False
                 elif event.key == pygame.K_r:  # Press R to restart
-                    score = random.randint(0, 100)  # Reset score or handle restart logic
+                    score = 0  # Reset score or handle restart logic
                     print("Game restarted!")  # Placeholder
                     subprocess.Popen(["python", "Main.py"]) # Run the main game script
                     pygame.quit()
