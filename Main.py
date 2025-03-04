@@ -75,9 +75,14 @@ class BaseSprite(pg.sprite.Sprite):
                 self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(0,0)) 
             else:
                 self.image.blit(self.gif[self.gif_index],(0 ,0))   
+            
+            if self == game.player:
+                if game.keys[pg.K_d]:
+                    self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(0,0))
+                
     
     def update(self):
-        self.animate_real()
+            self.animate_real()
           
             
         
@@ -498,34 +503,37 @@ class Game:
     def check_clear(self):
         if len(self.enemies) ==0 and self.scene ==0 :
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
                 self.all_sprites.add(a)
+                self.Animate.add(a)
                 self.door.add(a)
      
         elif self.scene == 1 and len(self.enemies) ==0 :
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
                 self.all_sprites.add(a)
+                self.Animate.add(a)
                 self.door.add(a)
         
         elif self.scene == 2 and len(self.enemies) ==0 :
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK)
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
                 self.all_sprites.add(a)
+                self.Animate.add(a)
                 self.door.add(a)
 
         elif self.scene == 3  and len(self.enemies) ==0:
             if len(self.door) == 0:
-                print('aaaaaaaa')
-                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
                 self.all_sprites.add(a)
+                self.Animate.add(a)
                 self.door.add(a)
 
         elif self.scene == 4  and len(self.enemies) ==0:
             if len(self.door) == 0:
-                print('aaaaaaaa')
-                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK)
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
                 self.all_sprites.add(a)
+                self.Animate.add(a)
                 self.door.add(a)
 
         elif self.scene==5:
