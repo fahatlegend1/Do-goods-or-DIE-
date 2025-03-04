@@ -415,11 +415,15 @@ class Game:
                 
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
               
-            elif len(entity_grid) > 1:
+            elif len(entity_grid) > 0 and len(entity_grid) < 7:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
                 self.enemies.add(a)
                 print(self.enemies)
-        
+            else:
+                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
+                self.enemies.add(a)
+                print(self.enemies)
+
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies,*self.Animate)
@@ -487,7 +491,6 @@ class Game:
       
     def draw(self):
         self.screen.fill(BLACK)
-        self.screen.blit(background,(0,0))
         self.background.draw(self.screen)
         self.all_sprites.draw(self.screen)
         bullets.draw(self.screen)  # <- Draw bullets
