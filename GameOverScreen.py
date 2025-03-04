@@ -2,7 +2,9 @@ import pygame
 import sys, subprocess
 import random, math
 
-
+f = open("score.txt", "r")
+final_score = f.read()
+f.close()
 
 # Initialize Pygame
 pygame.init()
@@ -82,7 +84,7 @@ def game_over_screen(score, offset):
 
 def main():
     running = True
-    score = 0  # Random score for demonstration
+    score = final_score  # Random score for demonstration
     game_over_sound.play()  # Play the game over sound
 
     # Create a list to store particles for the confetti effect
@@ -116,7 +118,7 @@ def main():
                 if event.key == pygame.K_q:  # Press Q to quit
                     running = False
                 elif event.key == pygame.K_r:  # Press R to restart
-                    score = 0  # Reset score or handle restart logic
+                    score = final_score  # Reset score or handle restart logic
                     print("Game restarted!")  # Placeholder
                     subprocess.Popen(["python", "Main.py"]) # Run the main game script
                     pygame.quit()

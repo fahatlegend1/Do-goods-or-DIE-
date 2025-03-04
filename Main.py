@@ -8,7 +8,7 @@ from General import *
 #change directory to this project file first
 # Screen dimensions
 SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 720
-
+small_font = pg.font.Font(None, 40)
 # Colors
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -200,9 +200,10 @@ class Player(BaseSprite):
 
     def attack(self, enemies):
         # Check for collisions with enemies
-        collided_enemies = pg.sprite.spritecollide(self, enemies, True)  # True means the will be removed
-        if collided_enemies:
-            print(f"Attacked and removed {len(collided_enemies)} enemies!")
+        #collided_enemies = pg.sprite.spritecollide(self, enemies, True)  # True means the will be removed
+        #if collided_enemies:
+            #print(f"Attacked and removed {len(collided_enemies)} enemies!")
+        pass
 
     def shoot(self):
         if pg.mouse.get_pressed(3)[0] == True:
@@ -222,6 +223,10 @@ class Player(BaseSprite):
     def c_alive(self):
         if self.hp <= 0 :
             self.alive = False
+            f = open("score.txt", "w")
+            print(str(game.player.score))
+            f.write(str(game.player.score))
+            f.close()
             print('player dead')       
 
     def update(self, keys, obstacles, enemies, screen_width, screen_height):
@@ -282,9 +287,10 @@ class Enemy(BaseSprite):
     def c_alive(self):
         if self.hp <= 0 :
             print('boss dead')   
-            a = BaseSprite(SCREEN_WIDTH/2-TILE_SIZE,TILE_SIZE*3,TILE_SIZE*2,TILE_SIZE*2,BLACK,gif = penguin_image_group)
+            #a = BaseSprite(self.rect.x,self.rect.y,self.ggg,self.ggg,BLACK,gif = penguin_image_group)
             self.kill()
-            game.Animate.add(a)
+            #game.all_sprites.add(a)
+            #game.Animate.add(a)
 
     def change_direction(self):
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
@@ -361,7 +367,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = False
         self.keys = pg.key.get_pressed()
-        self.scene = 2
+        self.scene = 1
         
         # Initialize sprites
         self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img,gif=main_image_group)
@@ -386,6 +392,18 @@ class Game:
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies,*self.Animate)
+
+        self.screen.blit(story_img_1,(0,0))
+        pg.display.flip() 
+        pg.time.wait(2000)
+     
+        self.screen.blit(story_img_2,(0,0))
+        pg.display.flip() 
+        pg.time.wait(3000)       
+
+        self.screen.blit(story_img_3,(0,0))
+        pg.display.flip()    
+        pg.time.wait(2500)   
         
     def gen(self):
         if self.scene == 3:
@@ -435,12 +453,18 @@ class Game:
 
     def game_end(self, win):
         if win == 0:
+            f = open("score.txt", "w")
+            f.write(str(game.player.score))
+            f.close()
             subprocess.Popen(['python', 'GameOverScreen.py'])
             print('Game Over')
             pg.quit()
             sys.exit()
 
         elif win == 1:
+            f = open("score.txt", "w")
+            f.write(str(game.player.score))
+            f.close()
             subprocess.Popen(['python', 'GameClearScreen.py'])
             print('Game Clear')
             pg.quit()
@@ -469,6 +493,8 @@ class Game:
                 self.draw()
             if self.player.hp <= 0:
                 self.game_end(0)
+            if self.player.score >=600:
+                self.game_end(1)  #feature
             
                 '''print("Game Over!")
                 subprocess.Popen(['python', 'GameOverScreen.py'])
@@ -508,6 +534,8 @@ class Game:
         if self.scene == 3 and len(self.enemies.sprites()) != 0:
                 pg.draw.rect(self.screen,(WHITE),pg.Rect(WIDTH/2-70,HEIGHT/2-75,100,10))
                 pg.draw.rect(self.screen,(GREEN),pg.Rect(WIDTH/2-70,HEIGHT/2-75,(self.enemies.sprites()[0].hp)/2.5,10)) #fix
+        score_text = small_font.render(str(self.player.score), True, WHITE)
+        screen.blit(score_text, (WIDTH -120, 50))
             
     
 
@@ -569,6 +597,8 @@ def back_to_menu():
 if __name__ == "__main__":
     game = Game()
     game.run()
+
+
 
 
 

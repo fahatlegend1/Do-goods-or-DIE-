@@ -21,3 +21,8 @@ while running:
         pg.display.flip()
           
        
+
+f = open("score.txt", "r")
+print('aa')
+print(f.read())
+

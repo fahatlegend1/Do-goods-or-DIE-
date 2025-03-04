@@ -95,4 +95,13 @@ game_clear_img = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
 back_ground = pg.image.load(r'Assets\Texture\hp bar\hp bar.png').convert_alpha()
 health_frame_img = pg.transform.scale(back_ground,(SCREEN_WIDTH/5.3,SCREEN_HEIGHT/12))
 
+back_ground = pg.image.load(r'Assets\Texture\Story\IMG_1.png').convert_alpha()
+story_img_1 = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
+
+back_ground = pg.image.load(r'Assets\Texture\Story\IMG_2.png').convert_alpha()
+story_img_2 = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
+
+back_ground = pg.image.load(r'Assets\Texture\Story\IMG_3.png').convert_alpha()
+story_img_3 = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
+
 
