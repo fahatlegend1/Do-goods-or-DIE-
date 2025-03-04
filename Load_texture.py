@@ -54,10 +54,13 @@ enemy_atk_imahe_group = ResizeGIF(enemy_atk_imahe_group,40,40)
 
 
 main_image_group = loadGIF('main_character_3.gif')
-main_image_group = ResizeGIF(main_image_group,40,40)
+main_image_group = ResizeGIF(main_image_group,37,37)
 
 portal_image_group = loadGIF('portal.gif')
 portal_image_group = ResizeGIF(portal_image_group,40,40)
+
+drop_image_group = loadGIF('Drop.gif')
+drop_image_group = ResizeGIF(drop_image_group,20,20)
 
 #load image
 

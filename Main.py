@@ -45,23 +45,7 @@ class BaseSprite(pg.sprite.Sprite):
         self.gif = gif
         self.width = width
         self.height = height
-        self.fff = 1
         
-
-    def animate(self):
-        if self.gif != False:
-            self.image.fill(EMPTY)  #change back to empty       #idk what this function d0 anymore
-            if self.fff ==0:
-                self.gif_index += 1
-                self.fff=1
-            else:
-                self.fff = 0
-            if self.gif_index >= len(self.gif):
-                self.gif_index = 0
-            if game.player.rect.centerx - self.rect.centerx <0:
-                self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(-self.width/2,-self.width+40)) 
-            else:
-                self.image.blit(self.gif[self.gif_index],(-self.width/2 ,-self.width+40)) 
 
     def animate_real(self):
         if self.gif != False:
@@ -125,6 +109,13 @@ class Bullet(BaseSprite):
                 pass
             else:
                 pg.sprite.spritecollide(self,game.obstacles,True)
+                a = self.x 
+                b = self.y
+                if random.randint(0,6) >5:
+                    c = Drop(a+TILE_SIZE/4,b+TILE_SIZE/4,width=TILE_SIZE/2,height=TILE_SIZE/2,gif=drop_image_group)
+                    game.all_sprites.add(c)
+                    game.Animate.add(c)
+                    game.drop.add(c)
                 #random loot herer
             self.kill()
             bullets.remove(self)
@@ -195,6 +186,14 @@ class Player(BaseSprite):
                 # come back here to remove door
                 game.gen()
                 
+            if pg.sprite.spritecollide(self,game.drop,True):
+                
+                self.hp += 15
+                if self.hp > 100:
+                    self.hp = 100
+
+                
+                
                 
                 
 
@@ -234,15 +233,15 @@ class Player(BaseSprite):
 
 
 class Obstacle(BaseSprite):
-    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE,image= Placholder_img,indestructible = False):
-        super().__init__(x, y, width, height, GREEN, image)
+    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE,image= Placholder_img,indestructible = False,gif = False):
+        super().__init__(x, y, width, height, GREEN, image,gif)
         self.pos = (x,y)
         self.indestructible = indestructible
 
 class Drop(Obstacle):
-    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, image=Placholder_img, indestructible=True):
-        super().__init__(x, y, width, height, image, indestructible)
-        self.item_index = random.randint(0,3,1)
+    def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, image=Placholder_img, indestructible=True,gif = False):
+        super().__init__(x, y, width, height, image, indestructible,gif)
+        
 
 #spawn drop neeeeeeeeeeeeeed
 
@@ -354,7 +353,7 @@ num_scene = 0
 class Game:
     def __init__(self):
         pg.init()
-        self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),pg.RESIZABLE)
         pg.display.set_caption('Do Good or DIE!')
         self.clock = pg.time.Clock()
         self.running = False
@@ -368,13 +367,14 @@ class Game:
         self.enemies = pg.sprite.Group()
         self.door = pg.sprite.Group()
         self.Animate = pg.sprite.Group()
+        self.drop = pg.sprite.Group()
         
 
         for i in range(len(entity_grid)):
             if i == 0:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
   
-            elif len(entity_grid) > 1:
+            elif len(entity_grid) > 3:
                 a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
                 self.enemies.add(a)
                 
@@ -398,6 +398,7 @@ class Game:
         self.enemies = pg.sprite.Group()
         self.door = pg.sprite.Group()
         self.Animate = pg.sprite.Group()
+        self.drop = pg.sprite.Group()
 
         if self.scene == 3:
                 a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5,speed=0)
@@ -501,6 +502,12 @@ class Game:
         pg.draw.rect(self.screen,(WHITE),pg.Rect(22,10,200,40))
         pg.draw.rect(self.screen,(GREEN),pg.Rect(22,10,self.player.hp *2,40))
         self.screen.blit(health_frame_img,(0,0))
+        if self.scene == 3 and len(self.enemies.sprites()) != 0:
+            pg.draw.rect(self.screen,(WHITE),pg.Rect(WIDTH/2-70,HEIGHT/2-75,100,10))
+            pg.draw.rect(self.screen,(GREEN),pg.Rect(WIDTH/2-70,HEIGHT/2-75,(self.enemies.sprites()[0].hp)/2.5,10)) #fix
+          
+  
+
         
 
     def check_clear(self):
