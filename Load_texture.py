@@ -49,6 +49,12 @@ boss_image_group = TakeOnly(boss_image_group,24)
 penguin_image_group = loadGIF('penguin.gif')
 penguin_image_group = ResizeGIF(penguin_image_group,80,80)
 
+enemy_atk_imahe_group = loadGIF('real_enemy_1.gif')
+enemy_atk_imahe_group = ResizeGIF(enemy_atk_imahe_group,40,40)
+
+
+main_image_group = loadGIF('main_character_3.gif')
+main_image_group = ResizeGIF(main_image_group,40,40)
 
 #load image
 

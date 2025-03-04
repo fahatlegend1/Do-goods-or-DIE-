@@ -147,8 +147,8 @@ class Bullet(BaseSprite):
 
 
 class Player(BaseSprite):
-    def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img):
-        super().__init__(x, y, width, height, RED,image)
+    def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img,gif = False):
+        super().__init__(x, y, width, height, RED,image,gif)
         self.speed = 3
         self.hp = 100
         self.alive = True
@@ -227,6 +227,7 @@ class Player(BaseSprite):
             self.attack(enemies)  # Check for attacks
             self.c_alive()
             self.shoot()
+            self.animate_real()
 
 
 class Obstacle(BaseSprite):
@@ -338,7 +339,7 @@ class Enemy(BaseSprite):
         self.move(obstacles, screen_width, screen_height)
         self.shoot(target)
         self.c_alive()
-        self.animate()
+        self.animate_real()
         if self.boss == True:
             self.skill(target)
         
@@ -358,7 +359,7 @@ class Game:
         self.scene = 2
         
         # Initialize sprites
-        self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
+        self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img,gif=main_image_group)
         self.obstacles = pg.sprite.Group()
         self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
@@ -371,7 +372,7 @@ class Game:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
   
             elif len(entity_grid) > 1:
-                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
+                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
                 self.enemies.add(a)
                 
 
@@ -412,7 +413,7 @@ class Game:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
               
             elif len(entity_grid) > 1:
-                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
+                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
                 self.enemies.add(a)
                 print(self.enemies)
         
