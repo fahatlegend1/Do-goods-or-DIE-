@@ -38,6 +38,7 @@ class BaseSprite(pg.sprite.Sprite):
         super().__init__()
         self.image = pg.Surface((width, height),pygame.SRCALPHA) # del srcalpha if u wanna see hit box or enable next line of code
         #self.image.fill(color)
+        self.ggg = height
         self.rect = self.image.get_rect(topleft=(x, y))
         self.last_shot_time = 0
         self.image.blit(image,(0,0))
@@ -280,8 +281,10 @@ class Enemy(BaseSprite):
 
     def c_alive(self):
         if self.hp <= 0 :
-            print('boss dead')
-            self.kill()     
+            print('boss dead')   
+            a = BaseSprite(SCREEN_WIDTH/2-TILE_SIZE,TILE_SIZE*3,TILE_SIZE*2,TILE_SIZE*2,BLACK,gif = penguin_image_group)
+            self.kill()
+            game.Animate.add(a)
 
     def change_direction(self):
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
@@ -503,10 +506,10 @@ class Game:
         pg.draw.rect(self.screen,(GREEN),pg.Rect(22,10,self.player.hp *2,40))
         self.screen.blit(health_frame_img,(0,0))
         if self.scene == 3 and len(self.enemies.sprites()) != 0:
-            pg.draw.rect(self.screen,(WHITE),pg.Rect(WIDTH/2-70,HEIGHT/2-75,100,10))
-            pg.draw.rect(self.screen,(GREEN),pg.Rect(WIDTH/2-70,HEIGHT/2-75,(self.enemies.sprites()[0].hp)/2.5,10)) #fix
-          
-  
+                pg.draw.rect(self.screen,(WHITE),pg.Rect(WIDTH/2-70,HEIGHT/2-75,100,10))
+                pg.draw.rect(self.screen,(GREEN),pg.Rect(WIDTH/2-70,HEIGHT/2-75,(self.enemies.sprites()[0].hp)/2.5,10)) #fix
+            
+    
 
         
 
