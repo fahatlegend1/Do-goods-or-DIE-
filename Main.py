@@ -34,7 +34,7 @@ def Find_angle(x,y,t_x,t_y):
 
 # Base Sprite class
 class BaseSprite(pg.sprite.Sprite):
-    def __init__(self, x, y, width, height, color,image = Placholder_img,gif = False):
+    def __init__(self, x, y, width, height ,image = Placholder_img,gif = False):
         super().__init__()
         self.image = pg.Surface((width, height),pygame.SRCALPHA) # del srcalpha if u wanna see hit box or enable next line of code
         #self.image.fill(color)
@@ -66,31 +66,28 @@ class BaseSprite(pg.sprite.Sprite):
     def animate_real(self):
         if self.gif != False:
             self.image.fill(EMPTY)  #change back to empty
-         
-            self.gif_index += 1
-     
+            if self.fff== 0:
+                self.gif_index += 1
+                self.fff=3
+            else:
+                self.fff -=1
             if self.gif_index >= len(self.gif):
                 self.gif_index = 0
             if game.player.rect.centerx - self.rect.centerx <0:
                 self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(0,0)) 
             else:
                 self.image.blit(self.gif[self.gif_index],(0 ,0))   
-            
-            if self == game.player:
-                if game.keys[pg.K_d]:
-                    self.image.blit(pg.transform.flip(self.gif[self.gif_index],True,False),(0,0))
-                
     
     def update(self):
-            self.animate_real()
+        self.animate_real()
           
             
         
 
 
 class Bullet(BaseSprite):
-    def __init__(self, x, y, target, owner, width=TILE_SIZE/2.5, height=TILE_SIZE/2.5, speed=BULLET_SPEED, color=(0, 100, 255),image = Fire_Charge_img):
-        super().__init__(x, y, width, height, color,image)
+    def __init__(self, x, y, target, owner, width=TILE_SIZE/2.5, height=TILE_SIZE/2.5, speed=BULLET_SPEED, image = Fire_Charge_img):
+        super().__init__(x, y, width, height, image)
         self.B_image = pg.transform.scale(image,(width*1.5,height*1.5))
         self.image.blit(image,(-(((width*1.5)-width)),-(((height*1.5)-height))))
         self.speed = speed
@@ -150,8 +147,8 @@ class Bullet(BaseSprite):
 
 
 class Player(BaseSprite):
-    def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img,gif = False):
-        super().__init__(x, y, width, height, RED,image,gif)
+    def __init__(self, x, y, width=TILE_SIZE-5, height=TILE_SIZE-5,image = Placholder_img):
+        super().__init__(x, y, width, height, image)
         self.speed = 3
         self.hp = 100
         self.alive = True
@@ -215,7 +212,7 @@ class Player(BaseSprite):
                     target=pg.mouse.get_pos(),
                     owner=self,
                     speed=BULLET_SPEED*1.15,
-                    color=(255, 100, 255)  # Red bullets for enemies
+                    #color=(255, 100, 255)  # Red bullets for enemies
                 )
                 self.last_shot_time = current_time
 
@@ -230,12 +227,11 @@ class Player(BaseSprite):
             self.attack(enemies)  # Check for attacks
             self.c_alive()
             self.shoot()
-            self.animate_real()
 
 
 class Obstacle(BaseSprite):
     def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE,image= Placholder_img,indestructible = False):
-        super().__init__(x, y, width, height, GREEN, image)
+        super().__init__(x, y, width, height, image)
         self.pos = (x,y)
         self.indestructible = indestructible
 
@@ -249,7 +245,7 @@ class Drop(Obstacle):
 
 class Enemy(BaseSprite):
     def __init__(self, x, y, width=TILE_SIZE, height=TILE_SIZE, speed=2,bullet_speed = 5,image = Placholder_img,indestructible= False,gif = False,bullet_size = TILE_SIZE/2.5):
-        super().__init__(x, y, width, height,(0,0,255),image ,gif)
+        super().__init__(x, y, width, height,image ,gif)
         self.speed = speed
         self.direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         self.last_shot_time = pg.time.get_ticks() - 100*random.randint(0,10)  # Track the last time the enemy shot a bullet
@@ -300,7 +296,7 @@ class Enemy(BaseSprite):
                 target=target,
                 owner=self,
                 speed=self.bullet_speed,
-                color=(255, 0, 0),  # Red bullets for enemies
+                #color=(255, 0, 0),  # Red bullets for enemies
                 width= self.bullet_size,
                 height= self.bullet_size
             )
@@ -318,7 +314,7 @@ class Enemy(BaseSprite):
                         target=target,
                         owner=self,
                         speed=self.bullet_speed,
-                        color=(255, 0, 0),  # Red bullets for enemies
+                        #color=(255, 0, 0),  # Red bullets for enemies
                         width= self.bullet_size,
                         height= self.bullet_size)
             else:
@@ -342,7 +338,7 @@ class Enemy(BaseSprite):
         self.move(obstacles, screen_width, screen_height)
         self.shoot(target)
         self.c_alive()
-        self.animate_real()
+        self.animate()
         if self.boss == True:
             self.skill(target)
         
@@ -362,7 +358,7 @@ class Game:
         self.scene = 2
         
         # Initialize sprites
-        self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img,gif=main_image_group)
+        self.player = Player(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4,image= steve_img)
         self.obstacles = pg.sprite.Group()
         self.background = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
@@ -375,7 +371,7 @@ class Game:
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
   
             elif len(entity_grid) > 1:
-                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
+                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
                 
 
@@ -403,7 +399,7 @@ class Game:
                 a =Enemy(entity_grid[1][0]*TILE_SIZE-(TILE_SIZE*2) ,entity_grid[1][1]*TILE_SIZE-(TILE_SIZE*2),height=TILE_SIZE*3,width=TILE_SIZE*3,indestructible=True,gif = boss_image_group,bullet_size= TILE_SIZE/2.5,speed=0)
                 self.enemies.add(a)
         elif self.scene == 4:
-            a = BaseSprite(SCREEN_WIDTH/2-TILE_SIZE,TILE_SIZE*3,TILE_SIZE*2,TILE_SIZE*2,BLACK,gif = penguin_image_group)
+            a = BaseSprite(SCREEN_WIDTH/2-TILE_SIZE,TILE_SIZE*3,TILE_SIZE*2,TILE_SIZE*2,gif = penguin_image_group)
             self.Animate.add(a)
 
           
@@ -415,15 +411,11 @@ class Game:
                 
                 self.player.rect.x , self.player.rect.y = entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE
               
-            elif len(entity_grid) > 0 and len(entity_grid) < 7:
-                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
+            elif len(entity_grid) > 1:
+                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img)
                 self.enemies.add(a)
                 print(self.enemies)
-            else:
-                a =Enemy(entity_grid[i][0]*TILE_SIZE ,entity_grid[i][1]*TILE_SIZE,image= skeleton_img,gif=enemy_atk_imahe_group)
-                self.enemies.add(a)
-                print(self.enemies)
-
+        
         draw_grid(self.screen,Obstacle,self.obstacles,BaseSprite,self.background) #all obstacle
 
         self.all_sprites = pg.sprite.Group(self.player, *self.obstacles, *self.enemies,*self.Animate)
@@ -491,6 +483,7 @@ class Game:
       
     def draw(self):
         self.screen.fill(BLACK)
+        self.screen.blit(background,(0,0))
         self.background.draw(self.screen)
         self.all_sprites.draw(self.screen)
         bullets.draw(self.screen)  # <- Draw bullets
@@ -506,37 +499,34 @@ class Game:
     def check_clear(self):
         if len(self.enemies) ==0 and self.scene ==0 :
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE)
                 self.all_sprites.add(a)
-                self.Animate.add(a)
                 self.door.add(a)
      
         elif self.scene == 1 and len(self.enemies) ==0 :
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE)
                 self.all_sprites.add(a)
-                self.Animate.add(a)
                 self.door.add(a)
         
         elif self.scene == 2 and len(self.enemies) ==0 :
             if len(self.door) == 0:
-                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
+                a =BaseSprite(door_grid[0][0]*TILE_SIZE,door_grid[0][1]*TILE_SIZE,TILE_SIZE,TILE_SIZE)
                 self.all_sprites.add(a)
-                self.Animate.add(a)
                 self.door.add(a)
 
         elif self.scene == 3  and len(self.enemies) ==0:
             if len(self.door) == 0:
-                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
+                print('aaaaaaaa')
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE)
                 self.all_sprites.add(a)
-                self.Animate.add(a)
                 self.door.add(a)
 
         elif self.scene == 4  and len(self.enemies) ==0:
             if len(self.door) == 0:
-                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE,color=BLACK,gif=portal_image_group)
+                print('aaaaaaaa')
+                a =BaseSprite(SCREEN_WIDTH/2-TILE_SIZE/2,SCREEN_HEIGHT/2-TILE_SIZE/2,TILE_SIZE,TILE_SIZE)
                 self.all_sprites.add(a)
-                self.Animate.add(a)
                 self.door.add(a)
 
         elif self.scene==5:

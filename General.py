@@ -197,7 +197,7 @@ def draw_grid(screen,Obstacle,ob_group,BaseSprite,base_group):
     for x in range(GRID_WIDTH):
         for y in range(GRID_HEIGHT):
             if grid[x][y] == 0:
-                c = BaseSprite(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,color = (255,0,0),image = floor_texture)
+                c = BaseSprite(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE, image = floor_texture)
                 base_group.add(c)
             elif grid[x][y] == 2:
                 a = Obstacle(x* TILE_SIZE,y* TILE_SIZE, width=TILE_SIZE, height=TILE_SIZE,indestructible = True,image = bedrock_texture)
