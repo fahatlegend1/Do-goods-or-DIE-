@@ -66,11 +66,9 @@ class BaseSprite(pg.sprite.Sprite):
     def animate_real(self):
         if self.gif != False:
             self.image.fill(EMPTY)  #change back to empty
-            if self.fff== 0:
-                self.gif_index += 1
-                self.fff=3
-            else:
-                self.fff -=1
+         
+            self.gif_index += 1
+     
             if self.gif_index >= len(self.gif):
                 self.gif_index = 0
             if game.player.rect.centerx - self.rect.centerx <0:

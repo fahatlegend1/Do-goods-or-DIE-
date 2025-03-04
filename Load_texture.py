@@ -40,8 +40,8 @@ def TakeOnly(frames,a):
 #load gif
 
 
-boss_image_group = loadGIF('boss.gif')
-boss_image_group = ResizeGIF(boss_image_group,240,240)
+boss_image_group = loadGIF('boss_1.gif')
+boss_image_group = ResizeGIF(boss_image_group,120,120)
 boss_image_group = TakeOnly(boss_image_group,24)
 
 
@@ -68,7 +68,7 @@ Placholder_img = pg.transform.scale(back_ground,(40,40))
 back_ground = pg.image.load(r'Assets\Texture\barrel.jpg').convert_alpha()
 Barrel_img = pg.transform.scale(back_ground,(40,40))
 
-back_ground = pg.image.load(r'Assets\Texture\bedrock.png').convert_alpha()
+back_ground = pg.image.load(r'Assets\Texture\IMG_4407.png').convert_alpha()
 bedrock_img = pg.transform.scale(back_ground,(40,40))
 
 back_ground = pg.image.load(r'Assets\Texture\stonebrick.png').convert_alpha()
