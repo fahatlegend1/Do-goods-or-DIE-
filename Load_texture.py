@@ -104,4 +104,7 @@ story_img_2 = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
 back_ground = pg.image.load(r'Assets\Texture\Story\IMG_3.png').convert_alpha()
 story_img_3 = pg.transform.scale(back_ground,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
+back_ground = pg.image.load(r'Assets\Texture\photo.png').convert_alpha()
+PHOTO = pg.transform.scale(back_ground,(SCREEN_WIDTH/4,SCREEN_HEIGHT/4))
+
 

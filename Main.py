@@ -488,13 +488,14 @@ class Game:
             elif self.scene == 3:
                 self.update()
                 self.draw()
+            if self.player.score >=500 and self.scene == 4:
+                self.game_end(1)  #feature
             elif self.scene == 4:
                 self.update()
                 self.draw()
             if self.player.hp <= 0:
                 self.game_end(0)
-            if self.player.score >=600:
-                self.game_end(1)  #feature
+
             
                 '''print("Game Over!")
                 subprocess.Popen(['python', 'GameOverScreen.py'])
@@ -536,6 +537,12 @@ class Game:
                 pg.draw.rect(self.screen,(GREEN),pg.Rect(WIDTH/2-70,HEIGHT/2-75,(self.enemies.sprites()[0].hp)/2.5,10)) #fix
         score_text = small_font.render(str(self.player.score), True, WHITE)
         screen.blit(score_text, (WIDTH -120, 50))
+        # XD
+        #self.screen.blit(PHOTO,WIDTH-1,0)
+        #if self.screen.get_size()[0]-WIDTH >300:
+        self.screen.blit(PHOTO,(WIDTH-1,0))
+       # print(self.screen.get_size()[0])
+
             
     
 
