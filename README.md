@@ -1,17 +1,19 @@
 # Do-goods-or-DIE-
-KOSEN-KMITL Programming 4 final project
+KOSEN-KMITL Programming 4 final project  
 This might be presented and demo at KOSEN-KMITL Open House 2025
 
 This game is inspired by the game "Soul Knight" and Doing good Project of Reserved Officer Training Corps Program.
 
 ## installing program : 
-You need to download every file on github in the same folder and run main.py to start playing.
+You need to download every file on github in the same folder and run main.py to start playing immediately.  
+Or you can run game_openning.py to access the main menu as well.
 This project uses pygame. It is necessary to pip install pygame and pip install pyvidplayer2 to run the program.
 
 ## Gameplay :
 You have to fight the enemies, dodge their bullets, and try not to be eliminated.
 You can shoot the enemies by pressing left-click.
-It's worth noting that enemies move randomly and will try to shoot you as well.
+It's worth noting that enemies move randomly and will try to shoot you as well.  
+The game also has a boss fight, if you are into that.
 
 # Anyways, pls enjoy!
 
